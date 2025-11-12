@@ -405,6 +405,7 @@ class Cart extends db_connection
             $subtotal = round($qty * $price, 2);
 
             return [
+                'cart_id' => (int)$item['c_id'],
                 'c_id' => (int)$item['c_id'],
                 'product_id' => (int)$item['product_id'],
                 'qty' => $qty,
