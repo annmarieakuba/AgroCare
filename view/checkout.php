@@ -128,10 +128,10 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                             <div class="text-muted small">Subtotal</div>
                             <div class="h4 fw-bold text-success" id="checkoutSubtotal">$0.00</div>
                         </div>
-                        <input type="hidden" id="checkoutCurrency" value="USD">
-                        <input type="hidden" id="checkoutPaymentMethod" value="Simulated Modal Payment">
-                        <button class="btn btn-success w-100 btn-lg" id="simulatePaymentBtn" <?php echo isset($_SESSION['customer_id']) ? '' : 'disabled'; ?>>
-                            <i class="fas fa-money-check-alt me-2"></i>Simulate Payment
+                        <input type="hidden" id="checkoutCurrency" value="NGN">
+                        <input type="hidden" id="checkoutPaymentMethod" value="Paystack">
+                        <button class="btn btn-success w-100 btn-lg" id="payWithPaystackBtn" <?php echo isset($_SESSION['customer_id']) ? '' : 'disabled'; ?>>
+                            <i class="fas fa-credit-card me-2"></i>Pay with Paystack
                         </button>
                         <?php if (!isset($_SESSION['customer_id'])): ?>
                             <small class="text-danger d-block mt-2">Login required to continue.</small>
@@ -148,32 +148,16 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
         </div>
     </footer>
 
-    <div class="modal fade" id="paymentConfirmationModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="paymentModalLabel"><i class="fas fa-university me-2"></i>Simulated Payment</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-3">This is a simulated payment. Confirming will finalize your order.</p>
-                    <ul class="list-unstyled mb-0">
-                        <li><i class="fas fa-check text-success me-2"></i>Payment method: <strong>Dummy Transfer</strong></li>
-                        <li><i class="fas fa-check text-success me-2"></i>No real charges will be made</li>
-                        <li><i class="fas fa-check text-success me-2"></i>Your cart items will move to orders</li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="confirmPaymentBtn">Yes, I have paid</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="paystackPaymentModal"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
+        window.PAYSTACK_PUBLIC_KEY = '<?php 
+            require_once __DIR__ . "/../controllers/payment_controller.php";
+            echo htmlspecialchars(get_paystack_public_key_ctr(), ENT_QUOTES); 
+        ?>';
     </script>
     <script src="../js/cart.js"></script>
     <script src="../js/checkout.js"></script>

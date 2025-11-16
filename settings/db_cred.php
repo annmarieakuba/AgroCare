@@ -19,7 +19,7 @@ if ($envServer && $envUser && $envName) {
     define('SERVER', 'localhost');
     define('USERNAME', 'root');
     define('PASSWD', '');
-    define('DATABASE', 'dbforlab');
+    define('DATABASE', 'ecommerce_2025A_annmarie_akuba');
 }
 
 ?>

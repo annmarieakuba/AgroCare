@@ -1,19 +1,53 @@
-// Checkout flow script
+// Checkout flow script with Paystack integration
 (function () {
     if (!window.CartAPI) {
         console.warn('CartAPI is not available. Ensure cart.js is loaded before checkout.js');
         return;
     }
 
+    const basePath = window.APP_BASE_PATH || '/';
+    const paystackPublicKey = window.PAYSTACK_PUBLIC_KEY || '';
+
+    const CheckoutAPI = {
+        async initializePayment() {
+            const response = await fetch(`${basePath}actions/initialize_payment_action.php`, {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+
+            const data = await response.json();
+            if (!response.ok || data.success === false) {
+                throw new Error(data.message || 'Failed to initialize payment');
+            }
+            return data;
+        },
+        async verifyPayment(reference) {
+            const response = await fetch(`${basePath}actions/verify_payment_action.php?reference=${encodeURIComponent(reference)}`, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            if (!response.ok || data.success === false) {
+                throw new Error(data.message || 'Payment verification failed');
+            }
+            return data;
+        }
+    };
+
     const CheckoutUI = {
         async init() {
             this.container = document.getElementById('checkoutItemsContainer');
             this.summarySubtotal = document.getElementById('checkoutSubtotal');
             this.summaryCount = document.getElementById('checkoutItemCount');
-            this.payButton = document.getElementById('simulatePaymentBtn');
-            this.modalElement = document.getElementById('paymentConfirmationModal');
-            this.confirmButton = document.getElementById('confirmPaymentBtn');
-            this.modal = this.modalElement ? new bootstrap.Modal(this.modalElement) : null;
+            this.payButton = document.getElementById('payWithPaystackBtn');
             this.resultContainer = document.getElementById('checkoutResult');
             this.feedback = document.getElementById('checkoutFeedback');
             this.currencyInput = document.getElementById('checkoutCurrency');
@@ -24,18 +58,11 @@
             await this.loadSummary();
         },
         bindEvents() {
-            if (this.payButton && this.modal) {
-                this.payButton.addEventListener('click', (event) => {
+            if (this.payButton) {
+                this.payButton.addEventListener('click', async (event) => {
                     event.preventDefault();
                     if (this.payButton.disabled) return;
-                    this.modal.show();
-                });
-            }
-
-            if (this.confirmButton) {
-                this.confirmButton.addEventListener('click', async (event) => {
-                    event.preventDefault();
-                    await this.handleCheckout();
+                    await this.handlePaystackPayment();
                 });
             }
         },
@@ -101,25 +128,68 @@
                 this.summaryCount.textContent = summary.total_items || 0;
             }
         },
-        async handleCheckout() {
+        async handlePaystackPayment() {
+            if (!paystackPublicKey) {
+                this.showFeedback('Paystack is not configured. Please contact support.', 'danger');
+                return;
+            }
+
             try {
                 this.setLoading(true);
-                this.toggleConfirmButton(true);
-                const payload = {
-                    currency: (this.currencyInput && this.currencyInput.value) || 'USD',
-                    payment_method: (this.paymentMethodInput && this.paymentMethodInput.value) || 'Simulated Modal'
-                };
-                const result = await CartAPI.processCheckout(payload);
-                this.renderSuccess(result);
-                if (this.modal) {
-                    this.modal.hide();
+                this.togglePayButton(true);
+
+                // Initialize payment
+                const paymentData = await CheckoutAPI.initializePayment();
+
+                if (!paymentData.authorization_url || !paymentData.reference) {
+                    throw new Error('Invalid payment initialization response');
                 }
-                CartAPI.refreshCartBadge();
+
+                // Open Paystack inline popup
+                const handler = PaystackPop.setup({
+                    key: paystackPublicKey,
+                    email: paymentData.email || '',
+                    amount: paymentData.amount * 100, // Convert to kobo
+                    ref: paymentData.reference,
+                    currency: 'NGN',
+                    callback: async (response) => {
+                        // Payment successful, verify it
+                        await this.verifyAndCompleteOrder(response.reference);
+                    },
+                    onClose: () => {
+                        // User closed the popup
+                        this.setLoading(false);
+                        this.togglePayButton(false);
+                        this.showFeedback('Payment was cancelled.', 'warning');
+                    }
+                });
+
+                handler.openIframe();
+            } catch (error) {
+                this.showFeedback(error.message, 'danger');
+                this.setLoading(false);
+                this.togglePayButton(false);
+            }
+        },
+        async verifyAndCompleteOrder(reference) {
+            try {
+                this.setLoading(true);
+                this.showFeedback('Verifying payment...', 'info');
+
+                // Verify payment and complete order
+                const result = await CheckoutAPI.verifyPayment(reference);
+
+                if (result.success && result.order) {
+                    this.renderSuccess(result);
+                    CartAPI.refreshCartBadge();
+                } else {
+                    throw new Error(result.message || 'Order completion failed');
+                }
             } catch (error) {
                 this.showFeedback(error.message, 'danger');
             } finally {
-                this.toggleConfirmButton(false);
                 this.setLoading(false);
+                this.togglePayButton(false);
             }
         },
         renderSuccess(result) {
@@ -128,21 +198,28 @@
             const order = result?.order || {};
             this.resultContainer.innerHTML = `
                 <div class="alert alert-success" role="alert">
-                    <h5 class="alert-heading">Thank you for your simulated payment!</h5>
+                    <h5 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Payment Successful!</h5>
                     <p>Your order <strong>${order.reference || ''}</strong> has been created successfully.</p>
+                    <hr>
                     <ul class="list-unstyled mb-0">
                         <li><strong>Order ID:</strong> ${order.order_id || '—'}</li>
                         <li><strong>Payment Reference:</strong> ${order.payment_reference || '—'}</li>
-                        <li><strong>Total Paid:</strong> ${CartAPI.formatCurrency(order.total_amount || 0, order.currency || 'USD')}</li>
+                        <li><strong>Total Paid:</strong> ${CartAPI.formatCurrency(order.total_amount || 0, order.currency || 'NGN')}</li>
                         <li><strong>Items:</strong> ${order.total_items || 0}</li>
                     </ul>
                 </div>
             `;
 
             this.disableCheckout('Checkout completed successfully.');
-            this.container && (this.container.innerHTML = '');
-            this.summarySubtotal && (this.summarySubtotal.textContent = CartAPI.formatCurrency(0));
-            this.summaryCount && (this.summaryCount.textContent = '0');
+            if (this.container) {
+                this.container.innerHTML = '';
+            }
+            if (this.summarySubtotal) {
+                this.summarySubtotal.textContent = CartAPI.formatCurrency(0);
+            }
+            if (this.summaryCount) {
+                this.summaryCount.textContent = '0';
+            }
         },
         renderError(message) {
             if (this.container) {
@@ -168,12 +245,12 @@
                 </div>
             `;
         },
-        toggleConfirmButton(isLoading) {
-            if (!this.confirmButton) return;
-            this.confirmButton.disabled = isLoading;
-            this.confirmButton.innerHTML = isLoading
+        togglePayButton(isLoading) {
+            if (!this.payButton) return;
+            this.payButton.disabled = isLoading;
+            this.payButton.innerHTML = isLoading
                 ? `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`
-                : `Yes, I have paid`;
+                : `<i class="fas fa-credit-card me-2"></i>Pay with Paystack`;
         },
         setLoading(isLoading) {
             if (!this.loadingOverlay) return;
@@ -187,4 +264,3 @@
         }
     });
 })();
-
