@@ -41,7 +41,21 @@ function setupEventListeners() {
 
 function loadCategories() {
     fetch('../actions/fetch_category_action.php')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+                });
+            }
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Invalid JSON response:', text.substring(0, 500));
+                    throw new Error('Server returned invalid JSON. Check console for details.');
+                }
+            });
+        })
         .then(data => {
             if (data.success && data.data) {
                 populateCategoryFilter(data.data);
@@ -54,7 +68,21 @@ function loadCategories() {
 
 function loadBrands() {
     fetch('../actions/fetch_brand_action.php')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+                });
+            }
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Invalid JSON response:', text.substring(0, 500));
+                    throw new Error('Server returned invalid JSON. Check console for details.');
+                }
+            });
+        })
         .then(data => {
             if (data.success && data.data) {
                 populateBrandFilter(data.data);
@@ -69,7 +97,21 @@ function loadProducts() {
     showLoading(true);
     
     fetch('../actions/product_actions.php?action=get_all')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`HTTP ${response.status}: ${text.substring(0, 200)}`);
+                });
+            }
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Invalid JSON response:', text.substring(0, 500));
+                    throw new Error('Server returned invalid JSON. Check console for details.');
+                }
+            });
+        })
         .then(data => {
             showLoading(false);
             if (data.success && data.data) {

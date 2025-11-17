@@ -1,24 +1,16 @@
 <?php
-require_once __DIR__ . '/../settings/core.php';
-require_once __DIR__ . '/../controllers/category_controller.php';
+// Start output buffering to prevent any warnings/errors from breaking JSON
+ob_start();
 
-// Set content type to JSON
 header('Content-Type: application/json');
 
-// Check if user is logged in
-if (!is_logged_in()) {
-    echo json_encode(['success' => false, 'message' => 'User not logged in']);
-    exit;
-}
-
-// Check if user is admin
-if (!is_admin()) {
-    echo json_encode(['success' => false, 'message' => 'Access denied. Admin privileges required.']);
-    exit;
-}
+require_once __DIR__ . '/../controllers/category_controller.php';
 
 try {
     $categories = get_categories_ctr();
+    
+    // Clear any output that might have been generated
+    ob_clean();
     
     if ($categories !== false) {
         echo json_encode([
@@ -34,9 +26,12 @@ try {
         ]);
     }
 } catch (Exception $e) {
+    ob_clean();
     echo json_encode([
         'success' => false,
         'message' => 'Failed to fetch categories: ' . $e->getMessage()
     ]);
 }
+
+ob_end_flush();
 ?>
