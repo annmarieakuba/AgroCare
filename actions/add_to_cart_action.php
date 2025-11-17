@@ -1,4 +1,7 @@
 <?php
+// Start output buffering to prevent any warnings/errors from breaking JSON
+ob_start();
+
 header('Content-Type: application/json');
 session_start();
 
@@ -18,14 +21,19 @@ function read_request_payload()
 
 function respond($payload, $code = 200)
 {
+    ob_clean();
     http_response_code($code);
     echo json_encode($payload);
+    ob_end_flush();
     exit;
 }
 
 $input = read_request_payload();
 $productId = isset($input['product_id']) ? (int)$input['product_id'] : 0;
 $quantity = isset($input['quantity']) ? (int)$input['quantity'] : 1;
+
+// Clear any output that might have been generated
+ob_clean();
 
 if ($productId <= 0) {
     respond([

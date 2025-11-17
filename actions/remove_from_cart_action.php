@@ -1,4 +1,7 @@
 <?php
+// Start output buffering to prevent any warnings/errors from breaking JSON
+ob_start();
+
 header('Content-Type: application/json');
 session_start();
 
@@ -18,10 +21,15 @@ function read_request_body()
 
 function json_response($payload, $code = 200)
 {
+    ob_clean();
     http_response_code($code);
     echo json_encode($payload);
+    ob_end_flush();
     exit;
 }
+
+// Clear any output that might have been generated
+ob_clean();
 
 $input = read_request_body();
 $cartId = isset($input['cart_id']) ? (int)$input['cart_id'] : 0;
