@@ -43,17 +43,27 @@ class PaystackPayment
         
         $data = [
             'email' => $email,
-            'amount' => $amount * 100, // Convert to kobo/cents
+            'amount' => (int)($amount * 100), // Convert to kobo/cents (must be integer)
             'reference' => $reference,
             'currency' => PAYSTACK_CURRENCY,
-            'callback_url' => $this->getCallbackUrl(),
             'metadata' => $metadata
         ];
+        
+        // Add callback URL only if defined (optional for Paystack)
+        $callbackUrl = $this->getCallbackUrl();
+        if (!empty($callbackUrl)) {
+            $data['callback_url'] = $callbackUrl;
+        }
 
         $response = $this->makeRequest('POST', $url, $data);
         
         if (!$response['status']) {
-            throw new RuntimeException('Paystack initialization failed: ' . ($response['message'] ?? 'Unknown error'));
+            $errorMsg = $response['message'] ?? 'Unknown error';
+            // Include more details if available
+            if (isset($response['data']['gateway_response'])) {
+                $errorMsg .= ' - ' . $response['data']['gateway_response'];
+            }
+            throw new RuntimeException('Paystack API error: ' . $errorMsg);
         }
 
         return $response['data'];
@@ -117,6 +127,10 @@ class PaystackPayment
         
         if ($httpCode !== 200) {
             $message = $decoded['message'] ?? 'HTTP ' . $httpCode;
+            // Include more error details if available
+            if (isset($decoded['data']['gateway_response'])) {
+                $message .= ' - ' . $decoded['data']['gateway_response'];
+            }
             throw new RuntimeException('Paystack API error: ' . $message);
         }
 

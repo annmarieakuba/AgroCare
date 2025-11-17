@@ -68,6 +68,14 @@ try {
             'message' => 'Invalid order amount.'
         ], 400);
     }
+    
+    // Ensure minimum amount (Paystack requires at least $0.01 or equivalent)
+    if ($amount < 0.01) {
+        respond([
+            'status' => 'error',
+            'message' => 'Order amount is too small. Minimum amount is $0.01.'
+        ], 400);
+    }
 
     // Generate unique reference
     $reference = 'AGRO-' . time() . '-' . strtoupper(bin2hex(random_bytes(4)));

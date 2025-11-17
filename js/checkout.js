@@ -150,18 +150,28 @@
 
                 // Initialize payment
                 this.showFeedback('Initializing payment...', 'info');
+                console.log('Initializing payment for email:', email);
+                
                 const paymentData = await CheckoutAPI.initializePayment(email);
+                console.log('Payment initialization response:', paymentData);
 
                 if (!paymentData.authorization_url) {
-                    throw new Error('Invalid payment initialization response');
+                    console.error('No authorization URL in response:', paymentData);
+                    throw new Error('Invalid payment initialization response. Please try again.');
                 }
 
                 // Redirect to Paystack
                 this.showFeedback('Redirecting to payment gateway...', 'info');
+                console.log('Redirecting to:', paymentData.authorization_url);
                 window.location.href = paymentData.authorization_url;
             } catch (error) {
                 console.error('Paystack payment error:', error);
-                this.showFeedback(error.message || 'Failed to initialize payment. Please try again.', 'danger');
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
+                const errorMsg = error.message || 'Failed to initialize payment. Please check your console for details.';
+                this.showFeedback(errorMsg, 'danger');
                 this.setLoading(false);
                 this.togglePayButton(false);
             }
