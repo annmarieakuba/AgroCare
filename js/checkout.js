@@ -19,7 +19,15 @@
                 body: JSON.stringify({})
             });
 
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('Invalid JSON response:', text.substring(0, 500));
+                throw new Error('Server returned invalid response. Please check console for details.');
+            }
+
             if (!response.ok || data.success === false) {
                 throw new Error(data.message || 'Failed to initialize payment');
             }
@@ -34,7 +42,15 @@
                 }
             });
 
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('Invalid JSON response:', text.substring(0, 500));
+                throw new Error('Server returned invalid response. Please check console for details.');
+            }
+
             if (!response.ok || data.success === false) {
                 throw new Error(data.message || 'Payment verification failed');
             }
@@ -76,7 +92,8 @@
                     this.disableCheckout('Your cart is empty. Add items before checking out.');
                 }
             } catch (error) {
-                this.renderError(error.message);
+                console.error('Error loading cart summary:', error);
+                this.renderError(error.message || 'Unable to load your cart. Please try again later.');
                 this.disableCheckout('Unable to load your cart. Please try again later.');
             } finally {
                 this.setLoading(false);
@@ -134,12 +151,18 @@
                 return;
             }
 
+            if (typeof PaystackPop === 'undefined') {
+                this.showFeedback('Paystack payment gateway is not loaded. Please refresh the page.', 'danger');
+                return;
+            }
+
             try {
                 this.setLoading(true);
                 this.togglePayButton(true);
 
                 // Initialize payment
                 const paymentData = await CheckoutAPI.initializePayment();
+                console.log('Payment data received:', paymentData);
 
                 if (!paymentData.authorization_url || !paymentData.reference) {
                     throw new Error('Invalid payment initialization response');
@@ -153,6 +176,7 @@
                     ref: paymentData.reference,
                     currency: 'NGN',
                     callback: async (response) => {
+                        console.log('Paystack callback:', response);
                         // Payment successful, verify it
                         await this.verifyAndCompleteOrder(response.reference);
                     },
@@ -166,7 +190,8 @@
 
                 handler.openIframe();
             } catch (error) {
-                this.showFeedback(error.message, 'danger');
+                console.error('Paystack payment error:', error);
+                this.showFeedback(error.message || 'Failed to initialize payment. Please try again.', 'danger');
                 this.setLoading(false);
                 this.togglePayButton(false);
             }

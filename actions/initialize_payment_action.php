@@ -1,4 +1,7 @@
 <?php
+// Start output buffering to prevent any warnings/errors from breaking JSON
+ob_start();
+
 header('Content-Type: application/json');
 session_start();
 
@@ -19,8 +22,10 @@ function read_input()
 
 function respond($payload, $code = 200)
 {
+    ob_clean();
     http_response_code($code);
     echo json_encode($payload);
+    ob_end_flush();
     exit;
 }
 
