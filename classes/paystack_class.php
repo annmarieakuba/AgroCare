@@ -2,6 +2,15 @@
 
 require_once __DIR__ . '/../settings/paystack_config.php';
 
+// Ensure callback URL is defined
+if (!defined('PAYSTACK_CALLBACK_URL')) {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+    $basePath = rtrim($scriptPath, '/');
+    define('PAYSTACK_CALLBACK_URL', $protocol . $host . $basePath . '/view/paystack_callback.php');
+}
+
 /**
  * Paystack Payment Integration Class
  * Handles Paystack API interactions for payment processing
@@ -121,11 +130,7 @@ class PaystackPayment
      */
     private function getCallbackUrl()
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-        $basePath = rtrim($scriptPath, '/');
-        return $protocol . $host . $basePath . '/actions/verify_payment_action.php';
+        return PAYSTACK_CALLBACK_URL;
     }
 
     /**

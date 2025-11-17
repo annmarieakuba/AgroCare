@@ -151,13 +151,8 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
     <div id="paystackPaymentModal"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
-        window.PAYSTACK_PUBLIC_KEY = '<?php 
-            require_once __DIR__ . "/../controllers/payment_controller.php";
-            echo htmlspecialchars(get_paystack_public_key_ctr(), ENT_QUOTES); 
-        ?>';
     </script>
     <script src="../js/cart.js"></script>
     <script src="../js/checkout.js"></script>

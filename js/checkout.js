@@ -1,4 +1,4 @@
-// Checkout flow script with Paystack integration
+// Checkout flow script with Paystack integration (Redirect Flow)
 (function () {
     if (!window.CartAPI) {
         console.warn('CartAPI is not available. Ensure cart.js is loaded before checkout.js');
@@ -6,17 +6,16 @@
     }
 
     const basePath = window.APP_BASE_PATH || '/';
-    const paystackPublicKey = window.PAYSTACK_PUBLIC_KEY || '';
 
     const CheckoutAPI = {
-        async initializePayment() {
-            const response = await fetch(`${basePath}actions/initialize_payment_action.php`, {
+        async initializePayment(email) {
+            const response = await fetch(`${basePath}actions/paystack_init_transaction.php`, {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({})
+                body: JSON.stringify({ email: email })
             });
 
             const text = await response.text();
@@ -28,31 +27,8 @@
                 throw new Error('Server returned invalid response. Please check console for details.');
             }
 
-            if (!response.ok || data.success === false) {
+            if (data.status !== 'success') {
                 throw new Error(data.message || 'Failed to initialize payment');
-            }
-            return data;
-        },
-        async verifyPayment(reference) {
-            const response = await fetch(`${basePath}actions/verify_payment_action.php?reference=${encodeURIComponent(reference)}`, {
-                method: 'GET',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const text = await response.text();
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch (e) {
-                console.error('Invalid JSON response:', text.substring(0, 500));
-                throw new Error('Server returned invalid response. Please check console for details.');
-            }
-
-            if (!response.ok || data.success === false) {
-                throw new Error(data.message || 'Payment verification failed');
             }
             return data;
         }
@@ -150,104 +126,44 @@
             }
         },
         async handlePaystackPayment() {
-            if (!paystackPublicKey) {
-                this.showFeedback('Paystack is not configured. Please contact support.', 'danger');
-                return;
-            }
-
-            if (typeof PaystackPop === 'undefined') {
-                this.showFeedback('Paystack payment gateway is not loaded. Please refresh the page.', 'danger');
-                return;
-            }
-
             try {
                 this.setLoading(true);
                 this.togglePayButton(true);
 
-                // Initialize payment
-                const paymentData = await CheckoutAPI.initializePayment();
-                console.log('Payment data received:', paymentData);
+                // Prompt for email if not in session
+                const email = prompt('Please enter your email address for payment:');
+                if (!email) {
+                    this.showFeedback('Email is required for payment.', 'warning');
+                    this.setLoading(false);
+                    this.togglePayButton(false);
+                    return;
+                }
 
-                if (!paymentData.authorization_url || !paymentData.reference) {
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    this.showFeedback('Please enter a valid email address.', 'danger');
+                    this.setLoading(false);
+                    this.togglePayButton(false);
+                    return;
+                }
+
+                // Initialize payment
+                this.showFeedback('Initializing payment...', 'info');
+                const paymentData = await CheckoutAPI.initializePayment(email);
+
+                if (!paymentData.authorization_url) {
                     throw new Error('Invalid payment initialization response');
                 }
 
-                // Open Paystack inline popup
-                const handler = PaystackPop.setup({
-                    key: paystackPublicKey,
-                    email: paymentData.email || '',
-                    amount: paymentData.amount * 100, // Convert to kobo
-                    ref: paymentData.reference,
-                    currency: 'NGN',
-                    callback: async (response) => {
-                        console.log('Paystack callback:', response);
-                        // Payment successful, verify it
-                        await this.verifyAndCompleteOrder(response.reference);
-                    },
-                    onClose: () => {
-                        // User closed the popup
-                        this.setLoading(false);
-                        this.togglePayButton(false);
-                        this.showFeedback('Payment was cancelled.', 'warning');
-                    }
-                });
-
-                handler.openIframe();
+                // Redirect to Paystack
+                this.showFeedback('Redirecting to payment gateway...', 'info');
+                window.location.href = paymentData.authorization_url;
             } catch (error) {
                 console.error('Paystack payment error:', error);
                 this.showFeedback(error.message || 'Failed to initialize payment. Please try again.', 'danger');
                 this.setLoading(false);
                 this.togglePayButton(false);
-            }
-        },
-        async verifyAndCompleteOrder(reference) {
-            try {
-                this.setLoading(true);
-                this.showFeedback('Verifying payment...', 'info');
-
-                // Verify payment and complete order
-                const result = await CheckoutAPI.verifyPayment(reference);
-
-                if (result.success && result.order) {
-                    this.renderSuccess(result);
-                    CartAPI.refreshCartBadge();
-                } else {
-                    throw new Error(result.message || 'Order completion failed');
-                }
-            } catch (error) {
-                this.showFeedback(error.message, 'danger');
-            } finally {
-                this.setLoading(false);
-                this.togglePayButton(false);
-            }
-        },
-        renderSuccess(result) {
-            if (!this.resultContainer) return;
-
-            const order = result?.order || {};
-            this.resultContainer.innerHTML = `
-                <div class="alert alert-success" role="alert">
-                    <h5 class="alert-heading"><i class="fas fa-check-circle me-2"></i>Payment Successful!</h5>
-                    <p>Your order <strong>${order.reference || ''}</strong> has been created successfully.</p>
-                    <hr>
-                    <ul class="list-unstyled mb-0">
-                        <li><strong>Order ID:</strong> ${order.order_id || '—'}</li>
-                        <li><strong>Payment Reference:</strong> ${order.payment_reference || '—'}</li>
-                        <li><strong>Total Paid:</strong> ${CartAPI.formatCurrency(order.total_amount || 0, order.currency || 'NGN')}</li>
-                        <li><strong>Items:</strong> ${order.total_items || 0}</li>
-                    </ul>
-                </div>
-            `;
-
-            this.disableCheckout('Checkout completed successfully.');
-            if (this.container) {
-                this.container.innerHTML = '';
-            }
-            if (this.summarySubtotal) {
-                this.summarySubtotal.textContent = CartAPI.formatCurrency(0);
-            }
-            if (this.summaryCount) {
-                this.summaryCount.textContent = '0';
             }
         },
         renderError(message) {
@@ -290,7 +206,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         console.log('Checkout page loaded');
         console.log('CartAPI available:', typeof window.CartAPI !== 'undefined');
-        console.log('Paystack key:', window.PAYSTACK_PUBLIC_KEY ? 'Set' : 'Missing');
         
         if (document.getElementById('checkoutItemsContainer')) {
             console.log('Initializing checkout UI...');
