@@ -83,10 +83,14 @@
             }
         },
         async loadSummary() {
+            console.log('Loading cart summary...');
             this.setLoading(true);
             try {
+                console.log('Calling CartAPI.fetchCart()...');
                 const data = await CartAPI.fetchCart();
+                console.log('Cart data received:', data);
                 const cart = data?.cart || { items: [], summary: {} };
+                console.log('Cart items:', cart.items?.length || 0);
                 this.renderSummary(cart);
                 if (!cart.items || cart.items.length === 0) {
                     this.disableCheckout('Your cart is empty. Add items before checking out.');
@@ -284,8 +288,15 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
+        console.log('Checkout page loaded');
+        console.log('CartAPI available:', typeof window.CartAPI !== 'undefined');
+        console.log('Paystack key:', window.PAYSTACK_PUBLIC_KEY ? 'Set' : 'Missing');
+        
         if (document.getElementById('checkoutItemsContainer')) {
+            console.log('Initializing checkout UI...');
             CheckoutUI.init();
+        } else {
+            console.error('checkoutItemsContainer not found!');
         }
     });
 })();
