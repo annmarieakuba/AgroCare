@@ -131,7 +131,7 @@ unset($_SESSION['paystack_reference']);
                         </div>
                         <div class="row mb-2">
                             <div class="col-5"><strong>Total Amount:</strong></div>
-                            <div class="col-7">₦${data.total_amount || '0.00'}</div>
+                            <div class="col-7">${data.currency === 'NGN' ? '₦' : data.currency === 'USD' ? '$' : ''}${data.total_amount || '0.00'}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-5"><strong>Items:</strong></div>

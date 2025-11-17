@@ -15,8 +15,8 @@ define('PAYSTACK_SECRET_KEY', 'sk_test_c931cd7fde5b564318dc920028a8c3e16409163a'
 // Paystack API base URL
 define('PAYSTACK_API_URL', 'https://api.paystack.co');
 
-// Currency (NGN for Nigeria, or USD, etc.)
-define('PAYSTACK_CURRENCY', 'NGN');
+// Currency (USD, NGN, GHS, ZAR, etc.) - Check your Paystack dashboard for supported currencies
+define('PAYSTACK_CURRENCY', 'USD');
 
 // Get base URL for callback
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';

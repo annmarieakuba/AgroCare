@@ -5,6 +5,7 @@ ob_start();
 header('Content-Type: application/json');
 session_start();
 
+require_once __DIR__ . '/../settings/paystack_config.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
 require_once __DIR__ . '/../controllers/payment_controller.php';
 
@@ -50,7 +51,7 @@ try {
     }
 
     // Verify payment and complete order
-    $orderResult = verify_paystack_payment_ctr($reference, $customerId, $cartData, 'NGN');
+    $orderResult = verify_paystack_payment_ctr($reference, $customerId, $cartData, PAYSTACK_CURRENCY);
 
     // Clear cart after successful payment
     empty_cart_ctr($customerId, $guestKey);
@@ -68,7 +69,7 @@ try {
         'order_id' => $orderResult['order_id'],
         'invoice_no' => $orderResult['invoice_no'],
         'total_amount' => number_format($orderResult['total_amount'], 2),
-        'currency' => 'NGN',
+        'currency' => PAYSTACK_CURRENCY,
         'order_date' => date('F j, Y'),
         'customer_name' => $_SESSION['customer_name'] ?? 'Customer',
         'item_count' => $orderResult['total_items'],

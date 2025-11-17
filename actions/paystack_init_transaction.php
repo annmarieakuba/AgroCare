@@ -5,6 +5,7 @@ ob_start();
 header('Content-Type: application/json');
 session_start();
 
+require_once __DIR__ . '/../settings/paystack_config.php';
 require_once __DIR__ . '/../controllers/cart_controller.php';
 require_once __DIR__ . '/../controllers/payment_controller.php';
 
