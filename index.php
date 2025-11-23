@@ -278,8 +278,41 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 		</div>
 	</section>
 
+	<!-- Search Section -->
+	<section class="search-section py-5 bg-light">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-8">
+					<div class="search-card p-4">
+						<h3 class="text-center mb-4" style="color: #2d5016;">
+							<i class="fas fa-search me-2"></i>Find Your Perfect Products
+						</h3>
+						<form class="search-form" action="view/product_search_result.php" method="GET">
+							<div class="row g-3">
+								<div class="col-md-6">
+									<input type="text" class="form-control form-control-lg" name="query" placeholder="Search products..." required>
+								</div>
+								<div class="col-md-3">
+									<select class="form-select form-select-lg" name="category" id="homeCategoryFilter">
+										<option value="">All Categories</option>
+										<!-- Categories will be loaded via AJAX -->
+									</select>
+								</div>
+								<div class="col-md-3">
+									<button type="submit" class="btn btn-success btn-lg w-100">
+										<i class="fas fa-search me-2"></i>Search
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
 	<!-- Categories Section -->
-	<section class="categories-section py-5 bg-light">
+	<section class="categories-section py-5">
 		<div class="container">
 			<div class="row text-center mb-5">
 				<div class="col-12">

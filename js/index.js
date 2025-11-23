@@ -51,17 +51,21 @@ function loadCategories() {
 // Populate search dropdown with categories
 function populateSearchDropdown(categories) {
     const searchDropdown = document.querySelector('select[name="category"]');
-    if (searchDropdown) {
+    const homeCategoryFilter = document.getElementById('homeCategoryFilter');
+    
+    const dropdowns = [searchDropdown, homeCategoryFilter].filter(el => el !== null);
+    
+    dropdowns.forEach(dropdown => {
         // Clear existing options except the first one
-        searchDropdown.innerHTML = '<option value="">All Categories</option>';
+        dropdown.innerHTML = '<option value="">All Categories</option>';
         
         categories.forEach(category => {
             const option = document.createElement('option');
             option.value = category.cat_id;
             option.textContent = category.cat_name;
-            searchDropdown.appendChild(option);
+            dropdown.appendChild(option);
         });
-    }
+    });
 }
 
 // Populate categories grid
