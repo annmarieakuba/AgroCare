@@ -379,3 +379,223 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: #20c997;
 }
+
+/* Value Proposition Section */
+.value-proposition-section {
+    padding: 80px 0;
+}
+
+.value-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.value-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(45, 80, 22, 0.2);
+    border-color: #2d5016;
+}
+
+.value-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #2d5016, #4a7c59);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.value-icon i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.value-card:hover .value-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: linear-gradient(135deg, #4a7c59, #2d5016);
+}
+
+/* Featured Products Section */
+.featured-products-section {
+    padding: 80px 0;
+    background-color: white;
+}
+
+.product-card-featured {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: 2px solid transparent;
+    height: 100%;
+}
+
+.product-card-featured:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(45, 80, 22, 0.2);
+    border-color: #2d5016;
+}
+
+.product-image-featured {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image-featured img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-image-featured i {
+    font-size: 4rem;
+    color: #2d5016;
+    opacity: 0.5;
+}
+
+.product-card-body-featured {
+    padding: 1.5rem;
+}
+
+.product-price-featured {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2d5016;
+    margin: 0.5rem 0;
+}
+
+.fair-to-farmers-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    color: #000;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+/* Curiosity Box Showcase */
+.curiosity-box-showcase {
+    padding: 80px 0;
+}
+
+.box-icon-wrapper {
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+}
+
+.curiosity-box-visual {
+    position: relative;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.step-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.step-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(45, 80, 22, 0.2);
+    border-color: #2d5016;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2d5016, #4a7c59);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.step-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4a7c59, #6b8e23);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.step-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.step-card:hover .step-icon {
+    transform: scale(1.1) rotate(10deg);
+    background: linear-gradient(135deg, #6b8e23, #4a7c59);
+}
+
+/* Hero Visual Enhancements */
+.hero-visual {
+    position: relative;
+    z-index: 2;
+}
+
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.float-icon {
+    position: absolute;
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    animation: floatIcon 4s ease-in-out infinite;
+}
+
+.float-icon:nth-child(2) {
+    animation-delay: 1s;
+}
+
+.float-icon:nth-child(3) {
+    animation-delay: 2s;
+}
+
+@keyframes floatIcon {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-20px) rotate(10deg);
+        opacity: 0.9;
+    }
+}

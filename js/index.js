@@ -1,7 +1,10 @@
-// AgroCare Farm Index Page JavaScript
+// AgroCare Index Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Load categories for search dropdown and categories grid
     loadCategories();
+    
+    // Load featured products
+    loadFeaturedProducts();
     
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -223,7 +226,7 @@ const observer = new IntersectionObserver(function(entries) {
 
 // Observe elements for animation
 document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.feature-card, .search-card, .category-card');
+    const animatedElements = document.querySelectorAll('.feature-card, .search-card, .category-card, .value-card, .step-card, .product-card-featured');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
@@ -231,3 +234,102 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 });
+
+// Load featured products
+function loadFeaturedProducts() {
+    const basePath = window.APP_BASE_PATH || '';
+    fetch(basePath + 'actions/product_actions.php?action=get_all')
+        .then(response => response.text())
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                if (data.success && data.data) {
+                    displayFeaturedProducts(data.data.slice(0, 8)); // Show first 8 products
+                }
+            } catch (e) {
+                console.error('Error parsing products:', e);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading featured products:', error);
+        });
+}
+
+// Display featured products
+function displayFeaturedProducts(products) {
+    const grid = document.getElementById('featuredProductsGrid');
+    if (!grid) return;
+    
+    if (products.length === 0) {
+        grid.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No products available at the moment.</p></div>';
+        return;
+    }
+    
+    const currencySymbol = '₵'; // GHS symbol
+    
+    grid.innerHTML = products.map(product => `
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="product-card-featured">
+                <div class="product-image-featured">
+                    ${product.product_image ? 
+                        `<img src="${window.APP_BASE_PATH || ''}${product.product_image}" alt="${product.product_title}" loading="lazy">` : 
+                        `<i class="fas fa-apple-alt"></i>`
+                    }
+                </div>
+                <div class="product-card-body-featured">
+                    <h5 class="fw-bold mb-2" style="color: #2d5016;">${product.product_title}</h5>
+                    <p class="text-muted small mb-2">${product.cat_name || 'Product'}</p>
+                    <div class="product-price-featured">${currencySymbol}${parseFloat(product.product_price).toFixed(2)}</div>
+                    <span class="fair-to-farmers-badge">
+                        <i class="fas fa-check-circle me-1"></i>Fair to Farmers
+                    </span>
+                    <div class="mt-3">
+                        <button class="btn btn-sm w-100" style="background: linear-gradient(135deg, #2d5016, #4a7c59); color: white; border: none;" onclick="addToCartFromFeatured(${product.product_id})">
+                            <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Add to cart from featured products
+function addToCartFromFeatured(productId) {
+    const basePath = window.APP_BASE_PATH || '';
+    fetch(basePath + 'actions/add_to_cart_action.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
+            btn.style.background = '#28a745';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = 'linear-gradient(135deg, #2d5016, #4a7c59)';
+            }, 2000);
+            
+            // Update cart count
+            if (typeof updateCartCount === 'function') {
+                updateCartCount();
+            }
+        } else {
+            alert('Failed to add product to cart. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to cart:', error);
+        alert('An error occurred. Please try again.');
+    });
+}

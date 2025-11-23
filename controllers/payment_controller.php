@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../classes/paystack_class.php';
 require_once __DIR__ . '/../classes/order_class.php';
+require_once __DIR__ . '/../classes/product_class.php';
+require_once __DIR__ . '/../classes/email_service.php';
+require_once __DIR__ . '/../classes/customer_class.php';
 require_once __DIR__ . '/cart_controller.php';
 
 function paystack_instance()
@@ -91,6 +94,52 @@ function verify_paystack_payment_ctr($reference, $customerId, $cartData, $curren
         );
 
         $order->db->commit();
+
+        // Get product details for email
+        $product = new Product();
+        $emailItems = [];
+        foreach ($items as $item) {
+            $productDetails = $product->view_single_product((int)$item['product_id']);
+            $emailItems[] = [
+                'product_name' => $productDetails['product_title'] ?? 'Product',
+                'qty' => (int)($item['qty'] ?? 0),
+                'product_price' => (float)($item['product_price'] ?? 0)
+            ];
+        }
+
+        // Get customer details for email
+        $customerEmail = $_SESSION['customer_email'] ?? '';
+        $customerName = $_SESSION['customer_name'] ?? 'Customer';
+        
+        // Try to get customer data from database if not in session
+        if (empty($customerEmail) || $customerName === 'Customer') {
+            $customer = new Customer($customerId);
+            $customerData = $customer->getCustomerByEmail($_SESSION['customer_email'] ?? '');
+            if ($customerData) {
+                $customerName = $customerData['full_name'] ?? $customerName;
+                $customerEmail = $customerData['email'] ?? $customerEmail;
+            }
+        }
+
+        // Prepare order data for email
+        $orderDataForEmail = [
+            'order_id' => $orderId,
+            'invoice_no' => $invoiceNo,
+            'payment_reference' => $reference,
+            'total_amount' => $subtotal,
+            'currency' => $currency,
+            'order_date' => date('F j, Y'),
+            'items' => $emailItems
+        ];
+
+        // Send order confirmation email (non-blocking - don't fail if email fails)
+        try {
+            $emailService = new EmailService();
+            $emailService->sendOrderConfirmation($customerEmail, $customerName, $orderDataForEmail);
+        } catch (Throwable $emailError) {
+            // Log email error but don't fail the payment
+            error_log("Email sending failed but payment succeeded: " . $emailError->getMessage());
+        }
 
         return [
             'order_id' => $orderId,

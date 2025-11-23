@@ -16,17 +16,17 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 	<meta http-equiv="Pragma" content="no-cache">
 	<meta http-equiv="Expires" content="0">
-	<title>AgroCare Farm - Fresh Agricultural Products</title>
+	<title>AgroCare - Fresh Farm. Smart Nutrition. Delivered. | Accra, Ghana</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 	<link href="css/index.css?v=<?php echo time(); ?>" rel="stylesheet">
 </head>
 <body>
 	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);">
 		<div class="container">
 			<a class="navbar-brand fw-bold" href="index.php">
-				<i class="fas fa-seedling me-2"></i>AgroCare Farm
+				<i class="fas fa-seedling me-2"></i>AgroCare
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
@@ -34,10 +34,16 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item">
-						<a class="nav-link" href="index.php"><i class="fas fa-home me-1"></i>Home</a>
+						<a class="nav-link active" href="index.php"><i class="fas fa-home me-1"></i>Home</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="view/all_product.php"><i class="fas fa-apple-alt me-1"></i>All Products</a>
+						<a class="nav-link" href="view/all_product.php"><i class="fas fa-apple-alt me-1"></i>Products</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="curiosity_box.php"><i class="fas fa-box me-1"></i>Curiosity Box</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="premium.php"><i class="fas fa-crown me-1"></i>Premium</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="view/product_search_result.php"><i class="fas fa-search me-1"></i>Search</a>
@@ -85,97 +91,187 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 			<div class="row align-items-center min-vh-100">
 				<div class="col-lg-6">
 					<div class="hero-content text-white">
-						<h1 class="display-4 fw-bold mb-4">
-							<i class="fas fa-seedling me-3"></i>Welcome to AgroCare Farm
+						<h1 class="display-3 fw-bold mb-4">
+							Fresh Farm. Smart Nutrition. Delivered.
 						</h1>
-						<p class="lead mb-4">Your trusted source for fresh, organic agricultural products. From farm to table, we bring you the finest crops, livestock, and agricultural supplies.</p>
+						<p class="lead mb-3" style="font-size: 1.3rem;">Sustainable & Affordable</p>
+						<p class="mb-4" style="font-size: 1.1rem;">Connecting smallholder farmers directly with consumers through AI-driven personalized nutrition and sustainable food delivery in Ghana.</p>
 						<div class="hero-buttons">
-							<a href="view/all_product.php" class="btn btn-light btn-lg me-3">
-								<i class="fas fa-apple-alt me-2"></i>Browse Products
+							<a href="view/all_product.php" class="btn btn-light btn-lg me-3 mb-2">
+								<i class="fas fa-shopping-bag me-2"></i>Shop Now
 							</a>
-							<a href="login/register.php" class="btn btn-outline-light btn-lg">
-								<i class="fas fa-user-plus me-2"></i>Join Us
+							<a href="curiosity_box.php" class="btn btn-outline-light btn-lg mb-2">
+								<i class="fas fa-box me-2"></i>Try Curiosity Box
 							</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-6">
 					<div class="hero-image text-center">
-						<i class="fas fa-seedling hero-icon"></i>
+						<div class="hero-visual">
+							<i class="fas fa-seedling hero-icon"></i>
+							<div class="floating-elements">
+								<i class="fas fa-apple-alt float-icon" style="top: 20%; left: 10%;"></i>
+								<i class="fas fa-fish float-icon" style="top: 60%; right: 15%;"></i>
+								<i class="fas fa-carrot float-icon" style="bottom: 20%; left: 20%;"></i>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Features Section -->
-	<section class="features-section py-5">
+	<!-- Value Proposition Section -->
+	<section class="value-proposition-section py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
 		<div class="container">
 			<div class="row text-center mb-5">
 				<div class="col-12">
-					<h2 class="display-5 fw-bold text-success mb-3">Why Choose AgroCare Farm?</h2>
-					<p class="lead text-muted">We're committed to providing the highest quality agricultural products</p>
+					<h2 class="display-4 fw-bold mb-3" style="color: #2d5016;">For Consumers</h2>
+					<p class="lead text-muted">Experience the future of personalized nutrition</p>
 				</div>
 			</div>
 			<div class="row g-4">
-				<div class="col-md-4">
-					<div class="feature-card text-center p-4">
-						<div class="feature-icon mb-3">
+				<div class="col-lg-3 col-md-6">
+					<div class="value-card text-center p-4 h-100">
+						<div class="value-icon mb-3">
+							<i class="fas fa-robot"></i>
+						</div>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">AI-Driven Personalized Diet Plans</h4>
+						<p class="text-muted">Get customized nutrition recommendations based on your health goals and preferences.</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="value-card text-center p-4 h-100">
+						<div class="value-icon mb-3">
+							<i class="fas fa-box-open"></i>
+						</div>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Affordable Subscription Boxes</h4>
+						<p class="text-muted">Curiosity Boxes starting from GHS 80/month with personalized protein portions and recipes.</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="value-card text-center p-4 h-100">
+						<div class="value-icon mb-3">
 							<i class="fas fa-leaf"></i>
 						</div>
-						<h4 class="fw-bold text-success">Organic Products</h4>
-						<p class="text-muted">100% organic and chemical-free agricultural products grown with care and sustainability.</p>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Farm-to-Table Freshness</h4>
+						<p class="text-muted">Direct from smallholder farmers to your doorstep, ensuring maximum freshness.</p>
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="feature-card text-center p-4">
-						<div class="feature-icon mb-3">
-							<i class="fas fa-truck"></i>
+				<div class="col-lg-3 col-md-6">
+					<div class="value-card text-center p-4 h-100">
+						<div class="value-icon mb-3">
+							<i class="fas fa-mobile-alt"></i>
 						</div>
-						<h4 class="fw-bold text-success">Fresh Delivery</h4>
-						<p class="text-muted">Direct from our farm to your doorstep, ensuring maximum freshness and quality.</p>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="feature-card text-center p-4">
-						<div class="feature-icon mb-3">
-							<i class="fas fa-heart"></i>
-						</div>
-						<h4 class="fw-bold text-success">Farm Fresh</h4>
-						<p class="text-muted">Handpicked products from our local farms, supporting sustainable agriculture.</p>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Mobile-Friendly Access</h4>
+						<p class="text-muted">Shop, subscribe, and manage your nutrition plan from any device, anywhere.</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Search Section -->
-	<section class="search-section py-5 bg-light">
+	<!-- Featured Products Section -->
+	<section class="featured-products-section py-5">
 		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-8">
-					<div class="search-card p-4">
-						<h3 class="text-center mb-4 text-success">
-							<i class="fas fa-search me-2"></i>Find Your Perfect Agricultural Products
-						</h3>
-						<form class="search-form" action="view/product_search_result.php" method="GET">
-							<div class="row g-3">
-								<div class="col-md-6">
-									<input type="text" class="form-control form-control-lg" name="query" placeholder="Search products..." required>
-								</div>
-								<div class="col-md-3">
-									<select class="form-select form-select-lg" name="category">
-										<option value="">All Categories</option>
-										<!-- Categories will be loaded via AJAX -->
-									</select>
-								</div>
-								<div class="col-md-3">
-									<button type="submit" class="btn btn-success btn-lg w-100">
-										<i class="fas fa-search me-2"></i>Search
-									</button>
-								</div>
-							</div>
-						</form>
+			<div class="row text-center mb-5">
+				<div class="col-12">
+					<h2 class="display-4 fw-bold mb-3" style="color: #2d5016;">Featured Products</h2>
+					<p class="lead text-muted">Fresh vegetables, fruits, fish, and pork products - Fair to Farmers</p>
+				</div>
+			</div>
+			<div class="row g-4" id="featuredProductsGrid">
+				<!-- Featured products will be loaded via AJAX -->
+			</div>
+		</div>
+	</section>
+
+	<!-- Curiosity Box Showcase -->
+	<section class="curiosity-box-showcase py-5" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-6 mb-4 mb-lg-0">
+					<div class="curiosity-box-visual text-center">
+						<div class="box-icon-wrapper">
+							<i class="fas fa-box-open" style="font-size: 12rem; color: rgba(255,255,255,0.9);"></i>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 text-white">
+					<h2 class="display-4 fw-bold mb-4">Your Monthly Protein Adventure</h2>
+					<p class="lead mb-4">Discover the Curiosity Box - a personalized monthly subscription that brings fresh protein, recipes, and nutrition education to your doorstep.</p>
+					<ul class="list-unstyled mb-4" style="font-size: 1.1rem;">
+						<li class="mb-3"><i class="fas fa-check-circle me-2"></i>Personalized protein portions (fish, pork, or mixed)</li>
+						<li class="mb-3"><i class="fas fa-check-circle me-2"></i>Step-by-step recipes with ingredients</li>
+						<li class="mb-3"><i class="fas fa-check-circle me-2"></i>Nutritional education materials</li>
+						<li class="mb-3"><i class="fas fa-check-circle me-2"></i>Protein experiment challenges</li>
+						<li class="mb-3"><i class="fas fa-check-circle me-2"></i>Surprise seasonal items</li>
+					</ul>
+					<div class="pricing-info mb-4">
+						<div class="d-flex align-items-center mb-2">
+							<span class="badge bg-light text-success me-2" style="font-size: 1rem; padding: 0.5rem 1rem;">Starting at GHS 80/month</span>
+						</div>
+						<div class="d-flex align-items-center">
+							<span class="badge bg-warning text-dark me-2" style="font-size: 1rem; padding: 0.5rem 1rem;">Seasonal Share: GHS 400 for 6 months</span>
+						</div>
+					</div>
+					<a href="curiosity_box.php" class="btn btn-light btn-lg">
+						<i class="fas fa-box me-2"></i>Subscribe Now
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- How It Works Section -->
+	<section class="how-it-works-section py-5">
+		<div class="container">
+			<div class="row text-center mb-5">
+				<div class="col-12">
+					<h2 class="display-4 fw-bold mb-3" style="color: #2d5016;">How It Works</h2>
+					<p class="lead text-muted">Get fresh, personalized nutrition in 4 simple steps</p>
+				</div>
+			</div>
+			<div class="row g-4">
+				<div class="col-lg-3 col-md-6">
+					<div class="step-card text-center p-4 h-100">
+						<div class="step-number mb-3">1</div>
+						<div class="step-icon mb-3">
+							<i class="fas fa-search"></i>
+						</div>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Browse & Select</h4>
+						<p class="text-muted">Browse our products or get AI recommendations based on your health goals and preferences.</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="step-card text-center p-4 h-100">
+						<div class="step-number mb-3">2</div>
+						<div class="step-icon mb-3">
+							<i class="fas fa-cog"></i>
+						</div>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Customize Your Order</h4>
+						<p class="text-muted">Customize your order or Curiosity Box with your preferred proteins, dietary goals, and family size.</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="step-card text-center p-4 h-100">
+						<div class="step-number mb-3">3</div>
+						<div class="step-icon mb-3">
+							<i class="fas fa-seedling"></i>
+						</div>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Farmers Prepare</h4>
+						<p class="text-muted">Our partner farmers prepare your fresh items with care, ensuring quality and traceability.</p>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6">
+					<div class="step-card text-center p-4 h-100">
+						<div class="step-number mb-3">4</div>
+						<div class="step-icon mb-3">
+							<i class="fas fa-truck"></i>
+						</div>
+						<h4 class="fw-bold mb-3" style="color: #2d5016;">Fast Delivery</h4>
+						<p class="text-muted">Fast delivery to your doorstep in Accra and surrounding areas. Fresh, guaranteed.</p>
 					</div>
 				</div>
 			</div>
@@ -183,12 +279,12 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 	</section>
 
 	<!-- Categories Section -->
-	<section class="categories-section py-5">
+	<section class="categories-section py-5 bg-light">
 		<div class="container">
 			<div class="row text-center mb-5">
 				<div class="col-12">
-					<h2 class="display-5 fw-bold text-success mb-3">Our Product Categories</h2>
-					<p class="lead text-muted">Explore our diverse range of agricultural products</p>
+					<h2 class="display-5 fw-bold mb-3" style="color: #2d5016;">Shop by Category</h2>
+					<p class="lead text-muted">Explore our diverse range of fresh products</p>
 				</div>
 			</div>
 			<div class="row g-4" id="categoriesGrid">
@@ -198,40 +294,45 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 	</section>
 
 	<!-- Footer -->
-	<footer class="footer bg-dark text-white py-5">
+	<footer class="footer py-5" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-4 mb-4">
-					<h5 class="fw-bold mb-3">
-						<i class="fas fa-seedling me-2"></i>AgroCare Farm
+					<h5 class="fw-bold mb-3 text-white">
+						<i class="fas fa-seedling me-2"></i>AgroCare
 					</h5>
-					<p class="text-light">Your trusted partner in sustainable agriculture. We bring you the freshest products from farm to table.</p>
+					<p class="text-light mb-2">Fresh Farm. Smart Nutrition. Delivered.</p>
+					<p class="text-light">Connecting smallholder farmers with consumers through AI-driven personalized nutrition in Ghana.</p>
 				</div>
 				<div class="col-lg-4 mb-4">
-					<h6 class="fw-bold mb-3">Quick Links</h6>
+					<h6 class="fw-bold mb-3 text-white">Quick Links</h6>
 					<ul class="list-unstyled">
 						<li><a href="view/all_product.php" class="text-light text-decoration-none"><i class="fas fa-apple-alt me-2"></i>All Products</a></li>
+						<li><a href="curiosity_box.php" class="text-light text-decoration-none"><i class="fas fa-box me-2"></i>Curiosity Box</a></li>
+						<li><a href="premium.php" class="text-light text-decoration-none"><i class="fas fa-crown me-2"></i>Premium Membership</a></li>
 						<li><a href="view/product_search_result.php" class="text-light text-decoration-none"><i class="fas fa-search me-2"></i>Search Products</a></li>
-						<li><a href="login/register.php" class="text-light text-decoration-none"><i class="fas fa-user-plus me-2"></i>Register</a></li>
 					</ul>
 				</div>
 				<div class="col-lg-4 mb-4">
-					<h6 class="fw-bold mb-3">Contact Info</h6>
+					<h6 class="fw-bold mb-3 text-white">Contact Info</h6>
 					<ul class="list-unstyled text-light">
-						<li><i class="fas fa-map-marker-alt me-2"></i>123 Farm Road, Agriculture City</li>
-						<li><i class="fas fa-phone me-2"></i>+1 (555) 123-4567</li>
-						<li><i class="fas fa-envelope me-2"></i>info@agrocarefarm.com</li>
+						<li><i class="fas fa-map-marker-alt me-2"></i>Accra, Ghana</li>
+						<li><i class="fas fa-phone me-2"></i>+233 XX XXX XXXX</li>
+						<li><i class="fas fa-envelope me-2"></i>info@agrocare.gh</li>
 					</ul>
 				</div>
 			</div>
-			<hr class="my-4">
+			<hr class="my-4" style="border-color: rgba(255,255,255,0.2);">
 			<div class="row">
 				<div class="col-12 text-center">
-					<p class="mb-0">&copy; 2024 AgroCare Farm. All rights reserved.</p>
+					<p class="mb-0 text-light">&copy; <?php echo date('Y'); ?> AgroCare. All rights reserved.</p>
 				</div>
 			</div>
 		</div>
 	</footer>
+
+	<!-- AI Chatbot Widget (will be added in separate file) -->
+	<div id="aiChatbotWidget"></div>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
@@ -239,5 +340,6 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 	</script>
 	<script src="js/cart.js"></script>
 	<script src="js/index.js?v=<?php echo time(); ?>"></script>
+	<script src="js/ai_chatbot.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
