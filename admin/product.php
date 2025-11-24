@@ -246,6 +246,6 @@ if (!is_admin()) {
     <div id="alertContainer" class="position-fixed" style="top: 20px; right: 20px; z-index: 9999;"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/product.js"></script>
+    <script src="../js/product.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
