@@ -149,11 +149,15 @@ function addProduct() {
         return;
     }
     
-    // Upload image first if provided
-    const imageFile = formData.get('product_image');
-    if (imageFile && imageFile.size > 0) {
+    // Check if a file was actually selected
+    const imageInput = document.getElementById('addProductImage');
+    const hasImage = imageInput && imageInput.files && imageInput.files.length > 0 && imageInput.files[0].size > 0;
+    
+    if (hasImage) {
+        // Upload image first
         uploadImage(formData, 'add');
     } else {
+        // No image selected, proceed without image
         formData.append('product_image', '');
         submitProductForm(formData, 'add');
     }
@@ -217,15 +221,29 @@ function uploadImage(formData, action) {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Uploading...';
     
+    // Log upload attempt
+    console.log('Uploading image:', {
+        fileName: imageFile.name,
+        fileSize: imageFile.size,
+        fileType: imageFile.type,
+        productId: action === 'edit' ? formData.get('product_id') : 0
+    });
+    
     fetch('../actions/upload_product_image_action.php', {
         method: 'POST',
         body: imageFormData
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
+        // Get response text first to see what we're getting
+        return response.text().then(text => {
+            console.log('Upload response:', text);
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Failed to parse JSON:', text);
+                throw new Error('Invalid response from server: ' + text.substring(0, 100));
+            }
+        });
     })
     .then(data => {
         submitBtn.disabled = false;
@@ -237,14 +255,15 @@ function uploadImage(formData, action) {
             formData.append('product_image', data.file_path);
             submitProductForm(formData, action);
         } else {
+            console.error('Upload failed:', data);
             showAlert(data.message || 'Error uploading image', 'danger');
         }
     })
     .catch(error => {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnText;
-        console.error('Error:', error);
-        showAlert('Error uploading image. Please try again.', 'danger');
+        console.error('Upload error:', error);
+        showAlert('Error uploading image: ' + error.message, 'danger');
     });
 }
 

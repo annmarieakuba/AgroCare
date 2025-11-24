@@ -1,13 +1,47 @@
 <?php
+// Start output buffering to catch any warnings
+ob_start();
 header('Content-Type: application/json');
 
 try {
+    // Debug: Log what we received
+    $debugInfo = [
+        'files_received' => isset($_FILES['product_image']),
+        'post_received' => isset($_POST['user_id']),
+        'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown'
+    ];
+    
     // Check if file was uploaded
-    if (!isset($_FILES['product_image']) || $_FILES['product_image']['error'] !== UPLOAD_ERR_OK) {
+    if (!isset($_FILES['product_image'])) {
         echo json_encode([
             'success' => false,
-            'message' => 'No file uploaded or upload error occurred'
+            'message' => 'No file was selected. Please choose an image file to upload.',
+            'debug' => $debugInfo
         ]);
+        ob_end_flush();
+        exit;
+    }
+    
+    // Check for upload errors
+    $uploadError = $_FILES['product_image']['error'];
+    if ($uploadError !== UPLOAD_ERR_OK) {
+        $errorMessages = [
+            UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize directive in php.ini (max: ' . ini_get('upload_max_filesize') . ')',
+            UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE directive in HTML form',
+            UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+            UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+            UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+            UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+            UPLOAD_ERR_EXTENSION => 'File upload stopped by extension'
+        ];
+        
+        $errorMsg = $errorMessages[$uploadError] ?? 'Unknown upload error (code: ' . $uploadError . ')';
+        echo json_encode([
+            'success' => false,
+            'message' => 'Upload error: ' . $errorMsg,
+            'error_code' => $uploadError
+        ]);
+        ob_end_flush();
         exit;
     }
     
@@ -99,8 +133,12 @@ try {
         ]);
     }
 } catch (Exception $e) {
+    ob_clean();
     echo json_encode([
         'success' => false,
-        'message' => 'Error uploading image: ' . $e->getMessage()
+        'message' => 'Error uploading image: ' . $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
     ]);
+    ob_end_flush();
 }
