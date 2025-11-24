@@ -83,22 +83,68 @@ try {
         $productDir = $userDir . 'temp/';
     }
     
-    // Create directories if they don't exist
+    // Ensure base uploads directory exists first
     if (!is_dir($uploadDir)) {
-        if (!mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Failed to create upload directory. Please check permissions.');
-        }
+        $oldUmask = umask(0);
+        @mkdir($uploadDir, 0777, true);
+        umask($oldUmask);
     }
     
-    if (!is_dir($userDir)) {
-        if (!mkdir($userDir, 0755, true)) {
-            throw new Exception('Failed to create user directory. Please check permissions.');
-        }
-    }
-    
+    // Create directories if they don't exist
+    // Use recursive mkdir to create all directories at once
     if (!is_dir($productDir)) {
-        if (!mkdir($productDir, 0755, true)) {
-            throw new Exception('Failed to create product directory. Please check permissions.');
+        // Try to create with 0777 first (most permissive), then restrict if needed
+        $oldUmask = umask(0);
+        $created = @mkdir($productDir, 0777, true);
+        umask($oldUmask);
+        
+        if (!$created && !is_dir($productDir)) {
+            // If mkdir failed, try with 0755
+            $created = @mkdir($productDir, 0755, true);
+            
+            if (!$created && !is_dir($productDir)) {
+                // Last attempt: check if parent directory exists and is writable
+                $parentDir = dirname($productDir);
+                if (!is_dir($parentDir)) {
+                    // Try to create parent
+                    $oldUmask = umask(0);
+                    @mkdir($parentDir, 0777, true);
+                    umask($oldUmask);
+                }
+                
+                if (!is_dir($parentDir)) {
+                    throw new Exception('Parent directory does not exist and could not be created: ' . $parentDir);
+                }
+                
+                if (!is_writable($parentDir)) {
+                    // Try to make parent writable
+                    @chmod($parentDir, 0755);
+                    if (!is_writable($parentDir)) {
+                        throw new Exception('Parent directory is not writable: ' . $parentDir . '. Please set permissions to 755 or 777 on the uploads folder.');
+                    }
+                }
+                
+                // Try one more time after fixing parent
+                $oldUmask = umask(0);
+                $created = @mkdir($productDir, 0777, true);
+                umask($oldUmask);
+                
+                if (!$created && !is_dir($productDir)) {
+                    throw new Exception('Failed to create directory: ' . $productDir . '. Please ensure the uploads/ directory exists and has write permissions (755 or 777).');
+                }
+            }
+        }
+    }
+    
+    // Verify the directory is writable
+    if (!is_writable($productDir)) {
+        // Try to make it writable
+        @chmod($productDir, 0755);
+        if (!is_writable($productDir)) {
+            @chmod($productDir, 0777);
+            if (!is_writable($productDir)) {
+                throw new Exception('Upload directory is not writable: ' . $productDir . '. Please set permissions to 755 or 777 on the uploads folder.');
+            }
         }
     }
     
