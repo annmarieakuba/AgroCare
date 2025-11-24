@@ -1,4 +1,5 @@
 // AgroCare Farm Product Management JavaScript
+// Version: 2.0 - Currency updated to Ghana Cedis (₵)
 document.addEventListener('DOMContentLoaded', function() {
     // Load products, categories, and brands on page load
     loadProducts();
@@ -114,7 +115,12 @@ function displayProducts(products) {
     
     noProductsMessage.style.display = 'none';
     
-    tbody.innerHTML = products.map(product => `
+    // Currency symbol for Ghana Cedis
+    const currencySymbol = '₵';
+    
+    tbody.innerHTML = products.map(product => {
+        const price = parseFloat(product.product_price || 0).toFixed(2);
+        return `
         <tr>
             <td>${product.product_id}</td>
             <td>
@@ -126,7 +132,7 @@ function displayProducts(products) {
             <td>${product.product_title}</td>
             <td>${product.cat_name || 'N/A'}</td>
             <td>${product.brand_name || 'N/A'}</td>
-            <td>₵${parseFloat(product.product_price).toFixed(2)}</td>
+            <td><strong style="color: #2d5016;">${currencySymbol}</strong>${price}</td>
             <td>
                 <button class="btn btn-sm btn-outline-primary me-2" onclick="editProduct(${product.product_id})">
                     <i class="fas fa-edit"></i> Edit
@@ -136,7 +142,10 @@ function displayProducts(products) {
                 </button>
             </td>
         </tr>
-    `).join('');
+        `;
+    }).join('');
+    
+    console.log('Products displayed with Ghana Cedis (₵) currency');
 }
 
 // Add new product
