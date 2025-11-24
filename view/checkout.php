@@ -126,7 +126,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                         </div>
                         <div class="mb-4">
                             <div class="text-muted small">Subtotal</div>
-                            <div class="h4 fw-bold text-success" id="checkoutSubtotal">$0.00</div>
+                            <div class="h4 fw-bold text-success" id="checkoutSubtotal">₵0.00</div>
                         </div>
                         <input type="hidden" id="checkoutCurrency" value="NGN">
                         <input type="hidden" id="checkoutPaymentMethod" value="Paystack">

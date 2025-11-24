@@ -110,7 +110,7 @@ if (!is_admin()) {
                                 <div class="mb-3">
                                     <label for="addProductPrice" class="form-label">Product Price *</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">₵</span>
                                         <input type="number" class="form-control" id="addProductPrice" name="product_price" required min="0.01" step="0.01" placeholder="0.00">
                                     </div>
                                     <div class="invalid-feedback"></div>
@@ -184,7 +184,7 @@ if (!is_admin()) {
                                 <div class="mb-3">
                                     <label for="editProductPrice" class="form-label">Product Price *</label>
                                     <div class="input-group">
-                                        <span class="input-group-text">$</span>
+                                        <span class="input-group-text">₵</span>
                                         <input type="number" class="form-control" id="editProductPrice" name="product_price" required min="0.01" step="0.01">
                                     </div>
                                     <div class="invalid-feedback"></div>
@@ -210,7 +210,12 @@ if (!is_admin()) {
                                 <div class="mb-3">
                                     <label for="editProductImage" class="form-label">Product Image</label>
                                     <input type="file" class="form-control" id="editProductImage" name="product_image" accept="image/*">
-                                    <div class="form-text">Upload a new image (max 5MB)</div>
+                                    <input type="hidden" id="editProductCurrentImage" name="current_image">
+                                    <div id="currentImagePreview" class="mt-2" style="display: none;">
+                                        <small class="text-muted">Current image: </small>
+                                        <img id="currentImagePreviewImg" src="" alt="Current image" style="max-width: 100px; max-height: 100px; border-radius: 5px; margin-left: 10px;">
+                                    </div>
+                                    <div class="form-text">Upload a new image to replace (max 5MB). Leave empty to keep current image.</div>
                                     <div class="invalid-feedback"></div>
                                 </div>
                                 <div class="mb-3">

@@ -40,19 +40,32 @@ try {
     // Create upload directory structure
     $uploadDir = __DIR__ . '/../uploads/';
     $userDir = $uploadDir . 'u' . $user_id . '/';
-    $productDir = $userDir . 'p' . $product_id . '/';
+    
+    // For new products (product_id = 0), use a temp directory
+    // For existing products, use product-specific directory
+    if ($product_id > 0) {
+        $productDir = $userDir . 'p' . $product_id . '/';
+    } else {
+        $productDir = $userDir . 'temp/';
+    }
     
     // Create directories if they don't exist
     if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
+        if (!mkdir($uploadDir, 0755, true)) {
+            throw new Exception('Failed to create upload directory. Please check permissions.');
+        }
     }
     
     if (!is_dir($userDir)) {
-        mkdir($userDir, 0755, true);
+        if (!mkdir($userDir, 0755, true)) {
+            throw new Exception('Failed to create user directory. Please check permissions.');
+        }
     }
     
     if (!is_dir($productDir)) {
-        mkdir($productDir, 0755, true);
+        if (!mkdir($productDir, 0755, true)) {
+            throw new Exception('Failed to create product directory. Please check permissions.');
+        }
     }
     
     // Generate unique filename
@@ -63,7 +76,11 @@ try {
     // Move uploaded file
     if (move_uploaded_file($file['tmp_name'], $filePath)) {
         // Return relative path from uploads directory
-        $relativePath = 'uploads/u' . $user_id . '/p' . $product_id . '/' . $fileName;
+        if ($product_id > 0) {
+            $relativePath = 'uploads/u' . $user_id . '/p' . $product_id . '/' . $fileName;
+        } else {
+            $relativePath = 'uploads/u' . $user_id . '/temp/' . $fileName;
+        }
         
         echo json_encode([
             'success' => true,
@@ -72,9 +89,13 @@ try {
             'file_name' => $fileName
         ]);
     } else {
+        $errorMsg = 'Failed to move uploaded file';
+        if (!is_writable($productDir)) {
+            $errorMsg .= '. Directory is not writable. Please check permissions.';
+        }
         echo json_encode([
             'success' => false,
-            'message' => 'Failed to move uploaded file'
+            'message' => $errorMsg
         ]);
     }
 } catch (Exception $e) {

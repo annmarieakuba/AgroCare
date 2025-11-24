@@ -223,7 +223,7 @@ function displayProducts() {
                         <i class="fas fa-tags me-1"></i>${product.brand_name || 'N/A'}
                     </div>
                     <div class="product-price">
-                        <i class="fas fa-dollar-sign me-1"></i>${parseFloat(product.product_price).toFixed(2)}
+                        <i class="fas fa-coins me-1"></i>₵${parseFloat(product.product_price).toFixed(2)}
                     </div>
                     <div class="product-description">
                         ${product.product_desc || 'No description available.'}
@@ -337,7 +337,7 @@ function viewProductDetails(productId) {
             </div>
             <div class="col-md-6">
                 <h4>${product.product_title}</h4>
-                <div class="product-detail-price">$${parseFloat(product.product_price).toFixed(2)}</div>
+                <div class="product-detail-price">₵${parseFloat(product.product_price).toFixed(2)}</div>
                 
                 <div class="product-detail-meta">
                     <div class="meta-item">

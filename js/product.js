@@ -126,7 +126,7 @@ function displayProducts(products) {
             <td>${product.product_title}</td>
             <td>${product.cat_name || 'N/A'}</td>
             <td>${product.brand_name || 'N/A'}</td>
-            <td>$${parseFloat(product.product_price).toFixed(2)}</td>
+            <td>₵${parseFloat(product.product_price).toFixed(2)}</td>
             <td>
                 <button class="btn btn-sm btn-outline-primary me-2" onclick="editProduct(${product.product_id})">
                     <i class="fas fa-edit"></i> Edit
@@ -169,39 +169,82 @@ function updateProduct() {
         return;
     }
     
-    // Upload image first if provided
-    const imageFile = formData.get('product_image');
-    if (imageFile && imageFile.size > 0) {
+    // Get current image path (to preserve if no new image is uploaded)
+    const currentImage = document.getElementById('editProductCurrentImage').value;
+    const imageInput = document.getElementById('editProductImage');
+    
+    // Check if a new file was actually selected
+    // formData.get('product_image') might return an empty File object even when no file is selected
+    const hasNewImage = imageInput && imageInput.files && imageInput.files.length > 0 && imageInput.files[0].size > 0;
+    
+    if (hasNewImage) {
+        // New image selected, upload it
         uploadImage(formData, 'edit');
     } else {
-        formData.append('product_image', '');
+        // No new image selected, keep the current one
+        // Remove the empty file from formData and set the current image path
+        formData.delete('product_image');
+        formData.append('product_image', currentImage || '');
         submitProductForm(formData, 'edit');
     }
 }
 
 // Upload image
 function uploadImage(formData, action) {
+    const imageInput = action === 'edit' ? document.getElementById('editProductImage') : document.getElementById('addProductImage');
+    
+    if (!imageInput || !imageInput.files || imageInput.files.length === 0) {
+        showAlert('Please select an image file', 'danger');
+        return;
+    }
+    
+    const imageFile = imageInput.files[0];
+    if (imageFile.size === 0) {
+        showAlert('Selected file is empty', 'danger');
+        return;
+    }
+    
     const imageFormData = new FormData();
-    imageFormData.append('product_image', formData.get('product_image'));
+    imageFormData.append('product_image', imageFile);
     imageFormData.append('user_id', 1); // Default user ID
     imageFormData.append('product_id', action === 'edit' ? formData.get('product_id') : 0);
+    
+    // Show loading state
+    const submitBtn = action === 'edit' 
+        ? document.querySelector('#editProductForm button[type="submit"]')
+        : document.querySelector('#addProductForm button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Uploading...';
     
     fetch('../actions/upload_product_image_action.php', {
         method: 'POST',
         body: imageFormData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        
         if (data.success) {
-            formData.set('product_image', data.file_path);
+            // Remove the file from formData and set the returned path
+            formData.delete('product_image');
+            formData.append('product_image', data.file_path);
             submitProductForm(formData, action);
         } else {
-            showAlert(data.message, 'danger');
+            showAlert(data.message || 'Error uploading image', 'danger');
         }
     })
     .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
         console.error('Error:', error);
-        showAlert('Error uploading image', 'danger');
+        showAlert('Error uploading image. Please try again.', 'danger');
     });
 }
 
@@ -245,6 +288,24 @@ function editProduct(productId) {
                 document.getElementById('editProductBrand').value = product.product_brand;
                 document.getElementById('editProductDesc').value = product.product_desc || '';
                 document.getElementById('editProductKeywords').value = product.product_keywords || '';
+                
+                // Store current image path and show preview if exists
+                const currentImageInput = document.getElementById('editProductCurrentImage');
+                const imagePreview = document.getElementById('currentImagePreview');
+                const imagePreviewImg = document.getElementById('currentImagePreviewImg');
+                const imageInput = document.getElementById('editProductImage');
+                
+                if (product.product_image) {
+                    currentImageInput.value = product.product_image;
+                    imagePreviewImg.src = '../' + product.product_image;
+                    imagePreview.style.display = 'block';
+                } else {
+                    currentImageInput.value = '';
+                    imagePreview.style.display = 'none';
+                }
+                
+                // Reset file input
+                imageInput.value = '';
                 
                 const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
                 modal.show();

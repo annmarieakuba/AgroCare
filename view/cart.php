@@ -152,7 +152,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                     </div>
                     <div class="col-md-4 text-md-end">
                         <div class="text-muted small mb-1">Subtotal</div>
-                        <div class="h5 fw-bold text-success mb-3" id="cartSubtotal">$0.00</div>
+                        <div class="h5 fw-bold text-success mb-3" id="cartSubtotal">₵0.00</div>
                         <a href="checkout.php" class="btn btn-success" id="proceedToCheckoutBtn">
                             <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
                         </a>
