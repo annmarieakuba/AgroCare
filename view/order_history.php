@@ -7,15 +7,84 @@ if (substr($baseDir, -5) === '/view') {
     $baseDir = substr($baseDir, 0, -5);
 }
 $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
+
+// Redirect if not logged in
+if (!isset($_SESSION['customer_id'])) {
+    header('Location: ' . $appBasePath . 'login/login.php?redirect=order_history');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Checkout - AgroCare Farm</title>
+    <title>My Orders - AgroCare Farm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 80px;
+        }
+        .order-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .order-header {
+            background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .order-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-state i {
+            font-size: 64px;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
@@ -37,9 +106,6 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                     <li class="nav-item">
                         <a class="nav-link" href="cart.php"><i class="fas fa-shopping-cart me-1"></i>Cart</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="checkout.php"><i class="fas fa-credit-card me-1"></i>Checkout</a>
-                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -54,7 +120,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                                 <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['customer_name'] ?? 'User'); ?>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
+                                <li><a class="dropdown-item active" href="order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
                                 <?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="../admin/category.php"><i class="fas fa-leaf me-2"></i>Manage Categories</a></li>
@@ -78,86 +144,58 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
         </div>
     </nav>
 
-    <main class="container" style="padding-top: 90px; padding-bottom: 40px;">
+    <main class="container" style="padding-top: 20px; padding-bottom: 40px;">
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h1 class="h3 fw-bold text-success mb-1"><i class="fas fa-credit-card me-2"></i>Checkout</h1>
-                        <p class="text-muted mb-0">Simulate your payment and place your order.</p>
+                        <h1 class="h3 fw-bold text-success mb-1">
+                            <i class="fas fa-receipt me-2"></i>My Orders
+                        </h1>
+                        <p class="text-muted mb-0">View your order history and track your purchases</p>
                     </div>
-                    <a href="cart.php" class="btn btn-outline-success">
-                        <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                    <a href="all_product.php" class="btn btn-outline-success">
+                        <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
                     </a>
                 </div>
             </div>
         </div>
 
-        <?php if (!isset($_SESSION['customer_id'])): ?>
-            <div class="alert alert-warning">
-                <i class="fas fa-info-circle me-2"></i>Please log in to complete your checkout.
-                <a href="../login/login.php" class="alert-link">Login now</a>
-            </div>
-        <?php endif; ?>
-
-        <div id="checkoutFeedback"></div>
-
-        <div class="row g-4">
-            <div class="col-lg-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white">
-                        <h2 class="h5 mb-0 text-success"><i class="fas fa-box-open me-2"></i>Order Summary</h2>
-                    </div>
-                    <div class="card-body p-0">
-                        <div id="checkoutLoadingState" class="justify-content-center align-items-center p-4" style="display: none;">
-                            <div class="spinner-border text-success me-2" role="status"></div>
-                            <span class="text-success">Preparing your order...</span>
-                        </div>
-                        <div id="checkoutItemsContainer" class="p-4"></div>
-                    </div>
+        <div id="ordersContainer">
+            <div class="text-center py-5">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
-                <div id="checkoutResult"></div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h3 class="h5 text-success mb-3"><i class="fas fa-receipt me-2"></i>Payment Details</h3>
-                        <div class="mb-3">
-                            <div class="text-muted small">Items</div>
-                            <div class="fw-semibold"><span id="checkoutItemCount">0</span></div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="text-muted small">Subtotal</div>
-                            <div class="h4 fw-bold text-success" id="checkoutSubtotal">₵0.00</div>
-                        </div>
-                        <input type="hidden" id="checkoutCurrency" value="NGN">
-                        <input type="hidden" id="checkoutPaymentMethod" value="Paystack">
-                        <button class="btn btn-success w-100 btn-lg" id="payWithPaystackBtn" <?php echo isset($_SESSION['customer_id']) ? '' : 'disabled'; ?>>
-                            <i class="fas fa-credit-card me-2"></i>Pay with Paystack
-                        </button>
-                        <?php if (!isset($_SESSION['customer_id'])): ?>
-                            <small class="text-danger d-block mt-2">Login required to continue.</small>
-                        <?php endif; ?>
-                    </div>
-                </div>
+                <p class="mt-3 text-muted">Loading your orders...</p>
             </div>
         </div>
     </main>
 
-    <footer class="footer bg-dark text-white py-4">
-        <div class="container text-center">
-            <p class="mb-0">&copy; <?php echo date('Y'); ?> AgroCare Farm. All rights reserved.</p>
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-receipt me-2"></i>Order Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="orderDetailsContent">
+                    <!-- Order details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-    </footer>
-
-    <div id="paystackPaymentModal"></div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/order_history.js?v=<?php echo time(); ?>"></script>
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
     </script>
-    <script src="../js/cart.js"></script>
-    <script src="../js/checkout.js"></script>
 </body>
 </html>
 
