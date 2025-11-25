@@ -195,7 +195,158 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 		</div>
 	</section>
 
-	<!-- Curiosity Box Showcase with Carousel -->
+	<!-- What's New - Curiosity Box Promotional Banner -->
+	<section class="whats-new-banner py-5" style="background: linear-gradient(135deg, #1a4d0e 0%, #2d5016 50%, #4a7c59 100%); position: relative; overflow: hidden;">
+		<!-- Animated background elements -->
+		<div class="floating-shapes">
+			<div class="shape shape-1"></div>
+			<div class="shape shape-2"></div>
+			<div class="shape shape-3"></div>
+		</div>
+		
+		<div class="container position-relative" style="z-index: 2;">
+			<!-- Main Promotional Carousel -->
+			<div id="whatsNewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-pause="false">
+				<div class="carousel-inner">
+					<!-- Slide 1: Holiday Savings -->
+					<div class="carousel-item active">
+						<div class="row align-items-center py-4">
+							<div class="col-lg-7 text-white">
+								<div class="promo-content">
+									<h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										Holiday Savings
+									</h1>
+									<h2 class="display-5 fw-bold mb-3" style="color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										Wishlist-worthy
+									</h2>
+									<h3 class="h2 fw-bold mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										holiday gifts are here
+									</h3>
+									<p class="lead mb-4" style="font-size: 1.3rem;">
+										Discover the Curiosity Box - Your monthly protein adventure with personalized nutrition, fresh ingredients, and exclusive recipes!
+									</p>
+									<a href="curiosity_box.php" class="btn btn-beaming btn-lg px-5 py-3" id="tryCuriosityBtn">
+										<span class="btn-content">
+											<i class="fas fa-box me-2"></i>Try Curiosity Box Now
+										</span>
+										<span class="btn-shine"></span>
+									</a>
+								</div>
+							</div>
+							<div class="col-lg-5">
+								<div class="product-showcase d-flex justify-content-around align-items-center flex-wrap">
+									<div class="product-item product-1">
+										<i class="fas fa-fish fa-4x"></i>
+									</div>
+									<div class="product-item product-2">
+										<i class="fas fa-drumstick-bite fa-4x"></i>
+									</div>
+									<div class="product-item product-3">
+										<i class="fas fa-seedling fa-4x"></i>
+									</div>
+									<div class="product-item product-4">
+										<i class="fas fa-book-open fa-4x"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Slide 2: Fresh Protein -->
+					<div class="carousel-item">
+						<div class="row align-items-center py-4">
+							<div class="col-lg-7 text-white">
+								<div class="promo-content">
+									<h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										Fresh Protein
+									</h1>
+									<h2 class="display-5 fw-bold mb-3" style="color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										Delivered Monthly
+									</h2>
+									<p class="lead mb-4" style="font-size: 1.3rem;">
+										Get personalized portions of fish, pork, or mixed proteins delivered fresh to your doorstep with step-by-step recipes included!
+									</p>
+									<a href="curiosity_box.php" class="btn btn-beaming btn-lg px-5 py-3" id="tryCuriosityBtn2">
+										<span class="btn-content">
+											<i class="fas fa-box me-2"></i>Try Curiosity Box Now
+										</span>
+										<span class="btn-shine"></span>
+									</a>
+								</div>
+							</div>
+							<div class="col-lg-5">
+								<div class="product-showcase d-flex justify-content-around align-items-center flex-wrap">
+									<div class="product-item product-1">
+										<i class="fas fa-fish fa-4x"></i>
+									</div>
+									<div class="product-item product-2">
+										<i class="fas fa-drumstick-bite fa-4x"></i>
+									</div>
+									<div class="product-item product-3">
+										<i class="fas fa-seedling fa-4x"></i>
+									</div>
+									<div class="product-item product-4">
+										<i class="fas fa-book-open fa-4x"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Slide 3: Nutrition Education -->
+					<div class="carousel-item">
+						<div class="row align-items-center py-4">
+							<div class="col-lg-7 text-white">
+								<div class="promo-content">
+									<h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										Nutrition Education
+									</h1>
+									<h2 class="display-5 fw-bold mb-3" style="color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+										Included Free
+									</h2>
+									<p class="lead mb-4" style="font-size: 1.3rem;">
+										Learn about nutrition with every box - recipes, tips, educational materials, and protein experiment challenges!
+									</p>
+									<a href="curiosity_box.php" class="btn btn-beaming btn-lg px-5 py-3" id="tryCuriosityBtn3">
+										<span class="btn-content">
+											<i class="fas fa-box me-2"></i>Try Curiosity Box Now
+										</span>
+										<span class="btn-shine"></span>
+									</a>
+								</div>
+							</div>
+							<div class="col-lg-5">
+								<div class="product-showcase d-flex justify-content-around align-items-center flex-wrap">
+									<div class="product-item product-1">
+										<i class="fas fa-fish fa-4x"></i>
+									</div>
+									<div class="product-item product-2">
+										<i class="fas fa-drumstick-bite fa-4x"></i>
+									</div>
+									<div class="product-item product-3">
+										<i class="fas fa-seedling fa-4x"></i>
+									</div>
+									<div class="product-item product-4">
+										<i class="fas fa-book-open fa-4x"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#whatsNewCarousel" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#whatsNewCarousel" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
+			</div>
+		</div>
+	</section>
+	
+	<!-- Curiosity Box Showcase -->
 	<section class="curiosity-box-showcase py-5" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%); position: relative;">
 		<div class="container">
 			<div class="row align-items-center">

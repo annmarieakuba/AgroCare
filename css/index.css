@@ -599,3 +599,234 @@ html {
         opacity: 0.9;
     }
 }
+
+/* What's New Banner Styles */
+.whats-new-banner {
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: floatShape 20s infinite ease-in-out;
+}
+
+.shape-1 {
+    width: 200px;
+    height: 200px;
+    background: #ffd700;
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 150px;
+    height: 150px;
+    background: #ff6b6b;
+    top: 60%;
+    right: 10%;
+    animation-delay: 5s;
+}
+
+.shape-3 {
+    width: 100px;
+    height: 100px;
+    background: #4ecdc4;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 10s;
+}
+
+@keyframes floatShape {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(30px, -30px) scale(1.1);
+    }
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+.product-showcase {
+    min-height: 300px;
+}
+
+.product-item {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 10px;
+    color: white;
+    transition: all 0.3s ease;
+    animation: productFloat 3s ease-in-out infinite;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.product-item:hover {
+    transform: translateY(-10px) scale(1.1);
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.product-1 {
+    animation-delay: 0s;
+}
+
+.product-2 {
+    animation-delay: 0.5s;
+}
+
+.product-3 {
+    animation-delay: 1s;
+}
+
+.product-4 {
+    animation-delay: 1.5s;
+}
+
+@keyframes productFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+/* Beaming Button Styles */
+.btn-beaming {
+    position: relative;
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #ff6347 100%);
+    background-size: 200% 200%;
+    color: #000;
+    font-weight: 800;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 40px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 140, 0, 0.3);
+    animation: buttonPulse 2s ease-in-out infinite, gradientShift 3s ease infinite;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-beaming:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.5);
+    animation: buttonPulse 1s ease-in-out infinite, gradientShift 2s ease infinite;
+}
+
+.btn-beaming:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+.btn-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shine 3s infinite;
+    z-index: 1;
+}
+
+@keyframes buttonPulse {
+    0%, 100% {
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 140, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 15px 40px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 140, 0, 0.6);
+    }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+    50%, 100% {
+        left: 100%;
+    }
+}
+
+.promo-content {
+    animation: fadeInLeft 1s ease-out;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Carousel customizations */
+#whatsNewCarousel .carousel-control-prev,
+#whatsNewCarousel .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+#whatsNewCarousel .carousel-control-prev:hover,
+#whatsNewCarousel .carousel-control-next:hover {
+    background: rgba(255, 255, 255, 0.4);
+    opacity: 1;
+}
+
+#whatsNewCarousel .carousel-control-prev {
+    left: 20px;
+}
+
+#whatsNewCarousel .carousel-control-next {
+    right: 20px;
+}
