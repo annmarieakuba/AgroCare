@@ -374,7 +374,12 @@ async function addToCart(productId, quantity = 1) {
     const productName = product ? product.product_title : 'Product';
 
     if (!window.CartAPI) {
-        showAlert('Cart system is not ready. Please refresh the page and try again.', 'danger');
+        Swal.fire({
+            icon: 'error',
+            title: 'Cart Error',
+            text: 'Cart system is not ready. Please refresh the page and try again.',
+            confirmButtonColor: '#2d5016'
+        });
         return;
     }
 
@@ -386,9 +391,21 @@ async function addToCart(productId, quantity = 1) {
         }
 
         await CartAPI.addToCart(productId, quantity);
-        showAlert(`"${productName}" has been added to your cart!`, 'success');
+        Swal.fire({
+            icon: 'success',
+            title: 'Added to Cart!',
+            text: `"${productName}" has been added to your cart!`,
+            confirmButtonColor: '#2d5016',
+            timer: 2000,
+            showConfirmButton: true
+        });
     } catch (error) {
-        showAlert(error.message || 'Unable to add item to cart.', 'danger');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Unable to add item to cart.',
+            confirmButtonColor: '#2d5016'
+        });
     } finally {
         const addBtn = document.getElementById('addToCartBtn');
         if (addBtn) {

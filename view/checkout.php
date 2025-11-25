@@ -173,6 +173,38 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
+        
+        // Show premium membership popup on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is not already premium (you can add this check based on your session)
+            <?php if (isset($_SESSION['customer_id']) && (!isset($_SESSION['is_premium']) || !$_SESSION['is_premium'])): ?>
+            setTimeout(() => {
+                Swal.fire({
+                    title: '🎉 Get 15% Discount!',
+                    html: `
+                        <div class="text-center">
+                            <i class="fas fa-crown fa-3x text-warning mb-3"></i>
+                            <p class="lead">Become a Premium Member and save <strong>15%</strong> on all your purchases!</p>
+                            <p class="text-muted">Enjoy exclusive benefits and discounts on every order.</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-crown me-2"></i>Become Premium Member',
+                    cancelButtonText: 'Maybe Later',
+                    confirmButtonColor: '#ffc107',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true,
+                    allowOutsideClick: true,
+                    allowEscapeKey: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '<?php echo $appBasePath; ?>premium.php';
+                    }
+                });
+            }, 1000); // Show after 1 second
+            <?php endif; ?>
+        });
     </script>
     <script src="../js/cart.js"></script>
     <script src="../js/checkout.js"></script>

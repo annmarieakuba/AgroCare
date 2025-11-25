@@ -245,12 +245,30 @@ function addToCartFromSearch(productId) {
                 updateCartCount();
             }
         } else {
-            alert('Failed to add product to cart. Please try again.');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add product to cart. Please try again.',
+                    confirmButtonColor: '#2d5016'
+                });
+            } else {
+                alert('Failed to add product to cart. Please try again.');
+            }
         }
     })
     .catch(error => {
         console.error('Error adding to cart:', error);
-        alert('An error occurred. Please try again.');
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again.',
+                confirmButtonColor: '#2d5016'
+            });
+        } else {
+            alert('An error occurred. Please try again.');
+        }
     });
 }
 

@@ -174,7 +174,7 @@ class Cart extends db_connection
             $updateStmt = $this->db->prepare("
                 UPDATE cart
                 SET qty = ?, updated_at = NOW()
-                WHERE c_id = ?
+                WHERE cart_id = ?
             ");
             $updateStmt->bind_param("ii", $newQty, $existing['cart_id']);
             $updateStmt->execute();
