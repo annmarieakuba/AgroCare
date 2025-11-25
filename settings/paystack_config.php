@@ -23,7 +23,7 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https:
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
 $basePath = rtrim($scriptPath, '/');
-define('APP_BASE_URL', $protocol . $host . $basePath);
+define('APP_BASE_URL', 'localhost/lab1_e');
 
 // Paystack callback URL
 define('PAYSTACK_CALLBACK_URL', APP_BASE_URL . '/view/paystack_callback.php');
