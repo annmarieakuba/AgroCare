@@ -603,9 +603,11 @@ html {
 /* What's New Banner Styles */
 .whats-new-banner {
     position: relative;
-    min-height: 500px;
+    min-height: 400px;
     display: flex;
     align-items: center;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .floating-shapes {
@@ -665,19 +667,21 @@ html {
 }
 
 .product-showcase {
-    min-height: 300px;
+    min-height: 250px;
+    padding: 20px 0;
 }
 
 .product-item {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border-radius: 20px;
-    padding: 30px;
-    margin: 10px;
+    padding: 20px;
+    margin: 8px;
     color: white;
     transition: all 0.3s ease;
     animation: productFloat 3s ease-in-out infinite;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    flex: 0 0 auto;
 }
 
 .product-item:hover {
