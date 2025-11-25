@@ -108,6 +108,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 					<li class="nav-item"><a class="nav-link" href="view/all_product.php"><i class="fas fa-apple-alt me-1"></i>Products</a></li>
 					<li class="nav-item"><a class="nav-link active" href="curiosity_box.php"><i class="fas fa-box me-1"></i>Curiosity Box</a></li>
 					<li class="nav-item"><a class="nav-link" href="premium.php"><i class="fas fa-crown me-1"></i>Premium</a></li>
+					<li class="nav-item"><a class="nav-link" href="view/product_search_result.php"><i class="fas fa-search me-1"></i>Search</a></li>
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link" href="view/cart.php"><i class="fas fa-shopping-cart me-1"></i>Cart <span class="badge bg-light text-success ms-1" data-cart-count style="display: none;">0</span></a></li>

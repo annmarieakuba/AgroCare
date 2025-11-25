@@ -96,9 +96,10 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 					<li class="nav-item"><a class="nav-link" href="view/all_product.php"><i class="fas fa-apple-alt me-1"></i>Products</a></li>
 					<li class="nav-item"><a class="nav-link" href="curiosity_box.php"><i class="fas fa-box me-1"></i>Curiosity Box</a></li>
 					<li class="nav-item"><a class="nav-link active" href="premium.php"><i class="fas fa-crown me-1"></i>Premium</a></li>
+					<li class="nav-item"><a class="nav-link" href="view/product_search_result.php"><i class="fas fa-search me-1"></i>Search</a></li>
 				</ul>
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" href="view/cart.php"><i class="fas fa-shopping-cart me-1"></i>Cart</a></li>
+					<li class="nav-item"><a class="nav-link" href="view/cart.php"><i class="fas fa-shopping-cart me-1"></i>Cart <span class="badge bg-light text-success ms-1" data-cart-count style="display: none;">0</span></a></li>
 					<?php if (isset($_SESSION['customer_id'])): ?>
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -431,6 +432,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
+		window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
 		function upgradeToPremium() {
 			<?php if (isset($_SESSION['customer_id'])): ?>
 				alert('Premium membership upgrade coming soon! You will be redirected to checkout.');
@@ -441,6 +443,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 			<?php endif; ?>
 		}
 	</script>
+	<script src="js/cart.js"></script>
 	<script src="js/ai_chatbot.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
