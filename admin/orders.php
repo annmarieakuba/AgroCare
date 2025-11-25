@@ -1,4 +1,9 @@
 <?php
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
 require_once __DIR__ . '/../settings/core.php';
 
 // Check if user is logged in
@@ -17,7 +22,7 @@ require_once __DIR__ . '/../settings/db_class.php';
 
 $db = new db_connection();
 if (!$db->db_connect()) {
-    die("Database connection failed. Please check your database configuration.");
+    die("Database connection failed. Please check your database configuration. Error: " . mysqli_connect_error());
 }
 $conn = $db->db;
 
@@ -25,15 +30,19 @@ $conn = $db->db;
 $ordersQuery = "
     SELECT o.order_id, o.order_date, o.order_status,
            c.customer_name, c.customer_email,
-           COALESCE(SUM(od.qty * od.unit_price), 0) as total_amount,
-           COUNT(od.orderdetail_id) as item_count
+           COALESCE(SUM(od.qty * COALESCE(od.unit_price, p.product_price)), 0) as total_amount,
+           COUNT(od.product_id) as item_count
     FROM orders o
-    LEFT JOIN customers c ON o.customer_id = c.customer_id
+    LEFT JOIN customer c ON o.customer_id = c.customer_id
     LEFT JOIN orderdetails od ON o.order_id = od.order_id
+    LEFT JOIN products p ON od.product_id = p.product_id
     GROUP BY o.order_id, o.order_date, o.order_status, c.customer_name, c.customer_email
     ORDER BY o.order_date DESC
 ";
 $ordersResult = mysqli_query($conn, $ordersQuery);
+if (!$ordersResult) {
+    error_log("Orders page query failed: " . mysqli_error($conn));
+}
 $orders = $ordersResult ? mysqli_fetch_all($ordersResult, MYSQLI_ASSOC) : [];
 ?>
 <!DOCTYPE html>

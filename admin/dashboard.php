@@ -1,4 +1,9 @@
 <?php
+// Enable error reporting for debugging (remove in production)
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Set to 1 for debugging, 0 for production
+ini_set('log_errors', 1);
+
 require_once __DIR__ . '/../settings/core.php';
 
 // Check if user is logged in
@@ -17,22 +22,23 @@ require_once __DIR__ . '/../settings/db_class.php';
 
 $db = new db_connection();
 if (!$db->db_connect()) {
-    die("Database connection failed. Please check your database configuration.");
+    die("Database connection failed. Please check your database configuration. Error: " . mysqli_connect_error());
 }
 $conn = $db->db;
 
 // Get earnings (total revenue from completed orders)
-// Try different possible column names for payment amount
 $earningsQuery = "
-    SELECT COALESCE(SUM(od.qty * od.unit_price), 0) as total_earnings,
+    SELECT COALESCE(SUM(od.qty * COALESCE(od.unit_price, p.product_price)), 0) as total_earnings,
            COUNT(DISTINCT o.order_id) as total_orders
     FROM orders o
     INNER JOIN orderdetails od ON o.order_id = od.order_id
+    INNER JOIN products p ON od.product_id = p.product_id
     WHERE o.order_status = 'completed'
 ";
 $earningsResult = mysqli_query($conn, $earningsQuery);
 if (!$earningsResult) {
     // Fallback if query fails
+    error_log("Dashboard earnings query failed: " . mysqli_error($conn));
     $earnings = ['total_earnings' => 0, 'total_orders' => 0];
 } else {
     $earnings = mysqli_fetch_assoc($earningsResult) ?: ['total_earnings' => 0, 'total_orders' => 0];
@@ -41,22 +47,26 @@ if (!$earningsResult) {
 // Get recent orders
 $recentOrdersQuery = "
     SELECT o.order_id, o.order_date, o.order_status, 
-           COALESCE(SUM(od.qty * od.unit_price), 0) as total_amount,
-           COUNT(od.orderdetail_id) as item_count
+           COALESCE(SUM(od.qty * COALESCE(od.unit_price, p.product_price)), 0) as total_amount,
+           COUNT(od.product_id) as item_count
     FROM orders o
     LEFT JOIN orderdetails od ON o.order_id = od.order_id
+    LEFT JOIN products p ON od.product_id = p.product_id
     GROUP BY o.order_id, o.order_date, o.order_status
     ORDER BY o.order_date DESC
     LIMIT 10
 ";
 $recentOrdersResult = mysqli_query($conn, $recentOrdersQuery);
+if (!$recentOrdersResult) {
+    error_log("Dashboard recent orders query failed: " . mysqli_error($conn));
+}
 $recentOrders = $recentOrdersResult ? mysqli_fetch_all($recentOrdersResult, MYSQLI_ASSOC) : [];
 
 // Get most bought products
 $topProductsQuery = "
     SELECT p.product_id, p.product_title, p.product_image,
            COALESCE(SUM(od.qty), 0) as total_quantity,
-           COALESCE(SUM(od.qty * od.unit_price), 0) as total_revenue
+           COALESCE(SUM(od.qty * COALESCE(od.unit_price, p.product_price)), 0) as total_revenue
     FROM orderdetails od
     INNER JOIN products p ON od.product_id = p.product_id
     GROUP BY p.product_id, p.product_title, p.product_image
@@ -64,6 +74,9 @@ $topProductsQuery = "
     LIMIT 10
 ";
 $topProductsResult = mysqli_query($conn, $topProductsQuery);
+if (!$topProductsResult) {
+    error_log("Dashboard top products query failed: " . mysqli_error($conn));
+}
 $topProducts = $topProductsResult ? mysqli_fetch_all($topProductsResult, MYSQLI_ASSOC) : [];
 
 // Get order statistics
@@ -76,6 +89,9 @@ $orderStatsQuery = "
     FROM orders
 ";
 $orderStatsResult = mysqli_query($conn, $orderStatsQuery);
+if (!$orderStatsResult) {
+    error_log("Dashboard order stats query failed: " . mysqli_error($conn));
+}
 $orderStats = $orderStatsResult ? mysqli_fetch_assoc($orderStatsResult) : ['total_orders' => 0, 'completed_orders' => 0, 'pending_orders' => 0, 'cancelled_orders' => 0];
 ?>
 <!DOCTYPE html>
