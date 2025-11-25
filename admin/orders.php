@@ -14,10 +14,11 @@ if (!is_admin()) {
 }
 
 require_once __DIR__ . '/../settings/db_class.php';
-require_once __DIR__ . '/../settings/db_cred.php';
 
 $db = new db_connection();
-$db->db_connect();
+if (!$db->db_connect()) {
+    die("Database connection failed. Please check your database configuration.");
+}
 $conn = $db->db;
 
 // Get all orders with details
@@ -32,8 +33,8 @@ $ordersQuery = "
     GROUP BY o.order_id, o.order_date, o.order_status, c.customer_name, c.customer_email
     ORDER BY o.order_date DESC
 ";
-$ordersResult = $conn->query($ordersQuery);
-$orders = $ordersResult ? $ordersResult->fetch_all(MYSQLI_ASSOC) : [];
+$ordersResult = mysqli_query($conn, $ordersQuery);
+$orders = $ordersResult ? mysqli_fetch_all($ordersResult, MYSQLI_ASSOC) : [];
 ?>
 <!DOCTYPE html>
 <html lang="en">

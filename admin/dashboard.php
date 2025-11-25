@@ -14,10 +14,11 @@ if (!is_admin()) {
 }
 
 require_once __DIR__ . '/../settings/db_class.php';
-require_once __DIR__ . '/../settings/db_cred.php';
 
 $db = new db_connection();
-$db->db_connect();
+if (!$db->db_connect()) {
+    die("Database connection failed. Please check your database configuration.");
+}
 $conn = $db->db;
 
 // Get earnings (total revenue from completed orders)
@@ -29,12 +30,12 @@ $earningsQuery = "
     INNER JOIN orderdetails od ON o.order_id = od.order_id
     WHERE o.order_status = 'completed'
 ";
-$earningsResult = $conn->query($earningsQuery);
+$earningsResult = mysqli_query($conn, $earningsQuery);
 if (!$earningsResult) {
     // Fallback if query fails
     $earnings = ['total_earnings' => 0, 'total_orders' => 0];
 } else {
-    $earnings = $earningsResult->fetch_assoc() ?: ['total_earnings' => 0, 'total_orders' => 0];
+    $earnings = mysqli_fetch_assoc($earningsResult) ?: ['total_earnings' => 0, 'total_orders' => 0];
 }
 
 // Get recent orders
@@ -48,8 +49,8 @@ $recentOrdersQuery = "
     ORDER BY o.order_date DESC
     LIMIT 10
 ";
-$recentOrdersResult = $conn->query($recentOrdersQuery);
-$recentOrders = $recentOrdersResult ? $recentOrdersResult->fetch_all(MYSQLI_ASSOC) : [];
+$recentOrdersResult = mysqli_query($conn, $recentOrdersQuery);
+$recentOrders = $recentOrdersResult ? mysqli_fetch_all($recentOrdersResult, MYSQLI_ASSOC) : [];
 
 // Get most bought products
 $topProductsQuery = "
@@ -62,8 +63,8 @@ $topProductsQuery = "
     ORDER BY total_quantity DESC
     LIMIT 10
 ";
-$topProductsResult = $conn->query($topProductsQuery);
-$topProducts = $topProductsResult ? $topProductsResult->fetch_all(MYSQLI_ASSOC) : [];
+$topProductsResult = mysqli_query($conn, $topProductsQuery);
+$topProducts = $topProductsResult ? mysqli_fetch_all($topProductsResult, MYSQLI_ASSOC) : [];
 
 // Get order statistics
 $orderStatsQuery = "
@@ -74,8 +75,8 @@ $orderStatsQuery = "
         SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_orders
     FROM orders
 ";
-$orderStatsResult = $conn->query($orderStatsQuery);
-$orderStats = $orderStatsResult ? $orderStatsResult->fetch_assoc() : ['total_orders' => 0, 'completed_orders' => 0, 'pending_orders' => 0, 'cancelled_orders' => 0];
+$orderStatsResult = mysqli_query($conn, $orderStatsQuery);
+$orderStats = $orderStatsResult ? mysqli_fetch_assoc($orderStatsResult) : ['total_orders' => 0, 'completed_orders' => 0, 'pending_orders' => 0, 'cancelled_orders' => 0];
 ?>
 <!DOCTYPE html>
 <html lang="en">
