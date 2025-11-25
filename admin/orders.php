@@ -166,7 +166,15 @@ $orders = $ordersResult ? mysqli_fetch_all($ordersResult, MYSQLI_ASSOC) : [];
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const basePath = '<?php echo rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/'); ?>';
+        const basePath = '<?php 
+            $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+            $baseDir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+            if (substr($baseDir, -6) === '/admin') {
+                $baseDir = substr($baseDir, 0, -6);
+            }
+            $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
+            echo htmlspecialchars($appBasePath, ENT_QUOTES); 
+        ?>';
         
         function viewOrderDetails(orderId) {
             // Show loading
