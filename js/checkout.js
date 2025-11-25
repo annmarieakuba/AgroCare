@@ -130,8 +130,19 @@
                 this.setLoading(true);
                 this.togglePayButton(true);
 
-                // Use SweetAlert for email input
-                const { value: email } = await Swal.fire({
+                // Ensure SweetAlert2 is loaded
+                if (typeof Swal === 'undefined') {
+                    console.error('SweetAlert2 is not loaded!');
+                    this.setLoading(false);
+                    this.togglePayButton(false);
+                    this.showFeedback('SweetAlert2 library is not loaded. Please refresh the page.', 'danger');
+                    return;
+                }
+
+                console.log('Using SweetAlert2 for email input...');
+
+                // Use SweetAlert for email input - NO FALLBACK TO PROMPT
+                const result = await Swal.fire({
                     title: '<i class="fas fa-envelope me-2"></i>Payment Email Required',
                     html: '<p class="mb-3">Please enter your email address for payment processing:</p>',
                     input: 'email',
@@ -159,6 +170,8 @@
                         input: 'swal2-input-custom'
                     }
                 });
+
+                const email = result.value;
 
                 if (!email) {
                     this.showFeedback('Payment cancelled.', 'info');

@@ -189,6 +189,13 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
         
+        // Verify SweetAlert2 is loaded
+        if (typeof Swal === 'undefined') {
+            console.error('SweetAlert2 failed to load!');
+        } else {
+            console.log('SweetAlert2 loaded successfully');
+        }
+        
         // Show premium membership popup on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is not already premium (you can add this check based on your session)
@@ -222,7 +229,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
         });
     </script>
     <script src="../js/cart.js"></script>
-    <script src="../js/checkout.js"></script>
+    <script src="../js/checkout.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
 
