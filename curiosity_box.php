@@ -392,8 +392,9 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 				</div>
 				<div class="col-lg-4 mb-4">
 					<h6 class="fw-bold mb-3 text-white">Contact</h6>
-					<p class="text-light mb-0">Accra, Ghana</p>
-					<p class="text-light mb-0">info@agrocare.gh</p>
+					<p class="text-light mb-0"><i class="fas fa-map-marker-alt me-2"></i>Accra, Ghana</p>
+					<p class="text-light mb-0"><i class="fas fa-phone me-2"></i>+233 24 123 4567</p>
+					<p class="text-light mb-0"><i class="fas fa-envelope me-2"></i>info@agrocare.gh</p>
 				</div>
 			</div>
 			<hr class="my-4" style="border-color: rgba(255,255,255,0.2);">

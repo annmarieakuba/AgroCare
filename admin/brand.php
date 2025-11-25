@@ -30,11 +30,17 @@ if (!is_admin()) {
                 <i class="fas fa-seedling"></i> AgroCare Farm Admin
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="../index.php">
-                    <i class="fas fa-home"></i> Home
+                <a class="nav-link" href="dashboard.php">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
                 </a>
                 <a class="nav-link" href="category.php">
                     <i class="fas fa-leaf"></i> Categories
+                </a>
+                <a class="nav-link" href="product.php">
+                    <i class="fas fa-apple-alt"></i> Products
+                </a>
+                <a class="nav-link" href="../index.php">
+                    <i class="fas fa-home"></i> View Site
                 </a>
                 <a class="nav-link" href="../logout.php">
                     <i class="fas fa-sign-out-alt"></i> Logout

@@ -103,12 +103,11 @@ $category = (int)($_GET['category'] ?? 0);
                                 <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['customer_name'] ?? 'User'); ?>
                             </a>
                             <ul class="dropdown-menu">
-                                <?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
-                                    <li><a class="dropdown-item" href="../admin/category.php"><i class="fas fa-leaf me-2"></i>Manage Categories</a></li>
-                                    <li><a class="dropdown-item" href="../admin/brand.php"><i class="fas fa-tags me-2"></i>Manage Brands</a></li>
-                                    <li><a class="dropdown-item" href="../admin/product.php"><i class="fas fa-apple-alt me-2"></i>Manage Products</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?>
+								<?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item" href="../admin/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</a></li>
+									<li><hr class="dropdown-divider"></li>
+								<?php endif; ?>
                                 <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
                         </li>
@@ -186,8 +185,9 @@ $category = (int)($_GET['category'] ?? 0);
                 </div>
                 <div class="col-lg-4 mb-4">
                     <h6 class="fw-bold mb-3 text-white">Contact</h6>
-                    <p class="text-light mb-0">Accra, Ghana</p>
-                    <p class="text-light mb-0">info@agrocare.gh</p>
+                    <p class="text-light mb-0"><i class="fas fa-map-marker-alt me-2"></i>Accra, Ghana</p>
+                    <p class="text-light mb-0"><i class="fas fa-phone me-2"></i>+233 24 123 4567</p>
+                    <p class="text-light mb-0"><i class="fas fa-envelope me-2"></i>info@agrocare.gh</p>
                 </div>
             </div>
             <hr class="my-4" style="border-color: rgba(255,255,255,0.2);">

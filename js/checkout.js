@@ -130,19 +130,28 @@
                 this.setLoading(true);
                 this.togglePayButton(true);
 
-                // Prompt for email if not in session
-                const email = prompt('Please enter your email address for payment:');
-                if (!email) {
-                    this.showFeedback('Email is required for payment.', 'warning');
-                    this.setLoading(false);
-                    this.togglePayButton(false);
-                    return;
-                }
+                // Use SweetAlert for email input
+                const { value: email } = await Swal.fire({
+                    title: 'Enter Your Email',
+                    input: 'email',
+                    inputLabel: 'Email address for payment',
+                    inputPlaceholder: 'Enter your email',
+                    showCancelButton: true,
+                    confirmButtonText: 'Continue to Payment',
+                    cancelButtonText: 'Cancel',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'You need to enter your email!';
+                        }
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(value)) {
+                            return 'Please enter a valid email address!';
+                        }
+                    }
+                });
 
-                // Validate email format
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    this.showFeedback('Please enter a valid email address.', 'danger');
+                if (!email) {
+                    this.showFeedback('Payment cancelled.', 'info');
                     this.setLoading(false);
                     this.togglePayButton(false);
                     return;

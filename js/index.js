@@ -29,6 +29,25 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
         });
     }
+    
+    // Curiosity Box hover modal
+    const curiosityBoxVisual = document.getElementById('curiosityBoxVisual');
+    if (curiosityBoxVisual) {
+        const overlay = curiosityBoxVisual.querySelector('.hover-overlay');
+        const modal = new bootstrap.Modal(document.getElementById('curiosityBoxModal'));
+        
+        curiosityBoxVisual.addEventListener('mouseenter', function() {
+            if (overlay) overlay.style.opacity = '1';
+        });
+        
+        curiosityBoxVisual.addEventListener('mouseleave', function() {
+            if (overlay) overlay.style.opacity = '0';
+        });
+        
+        curiosityBoxVisual.addEventListener('click', function() {
+            modal.show();
+        });
+    }
 });
 
 // Load categories from the server

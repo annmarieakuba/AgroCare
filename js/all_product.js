@@ -348,10 +348,6 @@ function viewProductDetails(productId) {
                         <span class="meta-label"><i class="fas fa-tags me-2"></i>Brand:</span>
                         <span class="meta-value">${product.brand_name || 'N/A'}</span>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-label"><i class="fas fa-hashtag me-2"></i>Product ID:</span>
-                        <span class="meta-value">#${product.product_id}</span>
-                    </div>
                     ${product.product_keywords ? `
                     <div class="meta-item">
                         <span class="meta-label"><i class="fas fa-key me-2"></i>Keywords:</span>
@@ -453,10 +449,11 @@ function showAlert(message, type) {
     }, 5000);
 }
 
-// Handle URL parameters for direct category filtering
+// Handle URL parameters for direct category filtering and product viewing
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
+    const productIdParam = urlParams.get('product_id');
     
     if (categoryParam) {
         // Set category filter after categories are loaded
@@ -465,5 +462,23 @@ document.addEventListener('DOMContentLoaded', function() {
             currentFilters.category = categoryParam;
             filterAndDisplayProducts();
         }, 1000);
+    }
+    
+    // If product_id is in URL, open that product's modal after products are loaded
+    if (productIdParam) {
+        const checkAndOpenProduct = () => {
+            if (allProducts.length > 0) {
+                const productId = parseInt(productIdParam);
+                const product = allProducts.find(p => p.product_id == productId);
+                if (product) {
+                    viewProductDetails(productId);
+                }
+            } else {
+                // Wait a bit more if products haven't loaded yet
+                setTimeout(checkAndOpenProduct, 500);
+            }
+        };
+        // Wait for products to load
+        setTimeout(checkAndOpenProduct, 1500);
     }
 });

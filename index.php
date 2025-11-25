@@ -67,9 +67,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 								<?php endif; ?>
 								<?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
 									<li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" href="admin/category.php"><i class="fas fa-leaf me-2"></i>Manage Categories</a></li>
-									<li><a class="dropdown-item" href="admin/brand.php"><i class="fas fa-tags me-2"></i>Manage Brands</a></li>
-									<li><a class="dropdown-item" href="admin/product.php"><i class="fas fa-apple-alt me-2"></i>Manage Products</a></li>
+									<li><a class="dropdown-item" href="admin/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</a></li>
 									<li><hr class="dropdown-divider"></li>
 								<?php endif; ?>
 								<li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
@@ -191,14 +189,19 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 		</div>
 	</section>
 
-	<!-- Curiosity Box Showcase -->
-	<section class="curiosity-box-showcase py-5" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);">
+	<!-- Curiosity Box Showcase with Carousel -->
+	<section class="curiosity-box-showcase py-5" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%); position: relative;">
 		<div class="container">
 			<div class="row align-items-center">
 				<div class="col-lg-6 mb-4 mb-lg-0">
-					<div class="curiosity-box-visual text-center">
+					<div class="curiosity-box-visual text-center position-relative" id="curiosityBoxVisual" style="cursor: pointer;">
 						<div class="box-icon-wrapper">
 							<i class="fas fa-box-open" style="font-size: 12rem; color: rgba(255,255,255,0.9);"></i>
+						</div>
+						<div class="hover-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.1); border-radius: 20px; opacity: 0; transition: opacity 0.3s;">
+							<div class="d-flex align-items-center justify-content-center h-100">
+								<span class="text-white fw-bold" style="font-size: 1.2rem;"><i class="fas fa-info-circle me-2"></i>Hover for Details</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -226,7 +229,83 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 				</div>
 			</div>
 		</div>
+		
+		<!-- Curiosity Box Carousel Banner -->
+		<div class="container mt-5">
+			<div id="curiosityCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+				<div class="carousel-inner rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+					<div class="carousel-item active">
+						<div class="text-center text-white p-4">
+							<h4 class="fw-bold mb-2"><i class="fas fa-gift me-2"></i>What's New: Curiosity Box Premium</h4>
+							<p class="mb-0">Get 15% off all products when you subscribe to our Premium Curiosity Box!</p>
+						</div>
+					</div>
+					<div class="carousel-item">
+						<div class="text-center text-white p-4">
+							<h4 class="fw-bold mb-2"><i class="fas fa-fish me-2"></i>Fresh Protein Delivered Monthly</h4>
+							<p class="mb-0">Personalized portions of fish, pork, or mixed proteins with recipes included!</p>
+						</div>
+					</div>
+					<div class="carousel-item">
+						<div class="text-center text-white p-4">
+							<h4 class="fw-bold mb-2"><i class="fas fa-book me-2"></i>Nutrition Education Included</h4>
+							<p class="mb-0">Learn about nutrition with every box - recipes, tips, and educational materials!</p>
+						</div>
+					</div>
+				</div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#curiosityCarousel" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon"></span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#curiosityCarousel" data-bs-slide="next">
+					<span class="carousel-control-next-icon"></span>
+				</button>
+			</div>
+		</div>
 	</section>
+	
+	<!-- Curiosity Box Hover Modal -->
+	<div class="modal fade" id="curiosityBoxModal" tabindex="-1">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header bg-success text-white">
+					<h5 class="modal-title"><i class="fas fa-box-open me-2"></i>Curiosity Box Explained</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<h5 class="fw-bold text-success"><i class="fas fa-fish me-2"></i>What's Inside?</h5>
+							<ul class="list-unstyled">
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Personalized protein portions</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Step-by-step recipes</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Nutritional education materials</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Protein experiment challenges</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Surprise seasonal items</li>
+							</ul>
+						</div>
+						<div class="col-md-6 mb-3">
+							<h5 class="fw-bold text-success"><i class="fas fa-star me-2"></i>Benefits</h5>
+							<ul class="list-unstyled">
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>15% discount on all products</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Free delivery</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Priority access to new items</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>Exclusive recipes</li>
+								<li class="mb-2"><i class="fas fa-check text-success me-2"></i>AI dietitian premium features</li>
+							</ul>
+						</div>
+					</div>
+					<div class="alert alert-info">
+						<i class="fas fa-info-circle me-2"></i><strong>Perfect for:</strong> Families looking for convenient, healthy protein options with educational content to improve nutrition knowledge.
+					</div>
+					<div class="text-center mt-3">
+						<a href="curiosity_box.php" class="btn btn-success btn-lg">
+							<i class="fas fa-box me-2"></i>Learn More & Subscribe
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- How It Works Section -->
 	<section class="how-it-works-section py-5">
@@ -354,7 +433,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 					<h6 class="fw-bold mb-3 text-white">Contact Info</h6>
 					<ul class="list-unstyled text-light">
 						<li><i class="fas fa-map-marker-alt me-2"></i>Accra, Ghana</li>
-						<li><i class="fas fa-phone me-2"></i>+233 XX XXX XXXX</li>
+						<li><i class="fas fa-phone me-2"></i>+233 24 123 4567</li>
 						<li><i class="fas fa-envelope me-2"></i>info@agrocare.gh</li>
 					</ul>
 				</div>

@@ -107,7 +107,10 @@ if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1) {
                         <a class="nav-link" href="../index.php"><i class="fas fa-home me-1"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="all_product.php"><i class="fas fa-apple-alt me-1"></i>All Products</a>
+                        <a class="nav-link" href="all_product.php"><i class="fas fa-apple-alt me-1"></i>Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../curiosity_box.php"><i class="fas fa-box me-1"></i>Curiosity Box</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="cart.php"><i class="fas fa-shopping-cart me-1"></i>Cart</a>
@@ -127,13 +130,11 @@ if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1) {
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item active" href="order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
-                                <?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="../admin/category.php"><i class="fas fa-leaf me-2"></i>Manage Categories</a></li>
-                                    <li><a class="dropdown-item" href="../admin/brand.php"><i class="fas fa-tags me-2"></i>Manage Brands</a></li>
-                                    <li><a class="dropdown-item" href="../admin/product.php"><i class="fas fa-apple-alt me-2"></i>Manage Products</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?>
+								<?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item" href="../admin/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</a></li>
+									<li><hr class="dropdown-divider"></li>
+								<?php endif; ?>
                                 <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
                         </li>

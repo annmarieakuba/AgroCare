@@ -32,7 +32,10 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                         <a class="nav-link" href="../index.php"><i class="fas fa-home me-1"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="all_product.php"><i class="fas fa-apple-alt me-1"></i>All Products</a>
+                        <a class="nav-link" href="all_product.php"><i class="fas fa-apple-alt me-1"></i>Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../curiosity_box.php"><i class="fas fa-box me-1"></i>Curiosity Box</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="cart.php"><i class="fas fa-shopping-cart me-1"></i>Cart</a>
@@ -57,13 +60,11 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                                 <?php if (!isset($_SESSION['user_role']) || (int)$_SESSION['user_role'] !== 1): ?>
                                     <li><a class="dropdown-item" href="order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
                                 <?php endif; ?>
-                                <?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="../admin/category.php"><i class="fas fa-leaf me-2"></i>Manage Categories</a></li>
-                                    <li><a class="dropdown-item" href="../admin/brand.php"><i class="fas fa-tags me-2"></i>Manage Brands</a></li>
-                                    <li><a class="dropdown-item" href="../admin/product.php"><i class="fas fa-apple-alt me-2"></i>Manage Products</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                <?php endif; ?>
+								<?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item" href="../admin/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</a></li>
+									<li><hr class="dropdown-divider"></li>
+								<?php endif; ?>
                                 <li><a class="dropdown-item" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                             </ul>
                         </li>
@@ -121,7 +122,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                 <div id="checkoutResult"></div>
             </div>
             <div class="col-lg-4">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm mb-3">
                     <div class="card-body">
                         <h3 class="h5 text-success mb-3"><i class="fas fa-receipt me-2"></i>Payment Details</h3>
                         <div class="mb-3">
@@ -142,6 +143,20 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                         <?php endif; ?>
                     </div>
                 </div>
+                
+                <!-- Premium Membership Discount Offer -->
+                <div class="card shadow-sm border-warning" style="border-width: 2px;">
+                    <div class="card-body bg-light">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-crown text-warning me-2" style="font-size: 1.5rem;"></i>
+                            <h5 class="mb-0 fw-bold text-dark">Get 15% Discount!</h5>
+                        </div>
+                        <p class="text-muted small mb-3">Sign up for Premium Membership and save 15% on all your purchases.</p>
+                        <a href="../premium.php" class="btn btn-warning w-100">
+                            <i class="fas fa-crown me-2"></i>Become Premium Member
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -155,6 +170,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
     <div id="paystackPaymentModal"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
     </script>
