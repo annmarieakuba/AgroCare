@@ -87,6 +87,12 @@ $category = (int)($_GET['category'] ?? 0);
                         <a class="nav-link" href="all_product.php"><i class="fas fa-apple-alt me-1"></i>Products</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="../curiosity_box.php"><i class="fas fa-box me-1"></i>Curiosity Box</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../premium.php"><i class="fas fa-crown me-1"></i>Premium</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link active" href="product_search_result.php"><i class="fas fa-search me-1"></i>Search</a>
                     </li>
                 </ul>
@@ -199,12 +205,36 @@ $category = (int)($_GET['category'] ?? 0);
         </div>
     </footer>
 
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalTitle">
+                        <i class="fas fa-apple-alt me-2"></i>Product Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="productModalBody">
+                    <!-- Product details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="addToCartBtn">
+                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
         const searchQuery = '<?php echo htmlspecialchars($query, ENT_QUOTES); ?>';
         const searchCategory = <?php echo $category; ?>;
+        let searchResults = []; // Store search results for modal
     </script>
     <script src="../js/cart.js"></script>
     <script src="../js/search_results.js?v=<?php echo time(); ?>"></script>

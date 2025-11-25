@@ -431,15 +431,33 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 	</footer>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
 		function upgradeToPremium() {
 			<?php if (isset($_SESSION['customer_id'])): ?>
-				alert('Premium membership upgrade coming soon! You will be redirected to checkout.');
+				Swal.fire({
+					icon: 'info',
+					title: 'Coming Soon!',
+					text: 'Premium membership upgrade coming soon! You will be redirected to checkout.',
+					confirmButtonColor: '#ffc107',
+					confirmButtonText: 'OK'
+				});
 				// In a real implementation, this would redirect to premium checkout
 			<?php else: ?>
-				alert('Please login or register to upgrade to Premium membership.');
-				window.location.href = '<?php echo $appBasePath; ?>login/login.php';
+				Swal.fire({
+					icon: 'warning',
+					title: 'Login Required',
+					text: 'Please login or register to upgrade to Premium membership.',
+					confirmButtonColor: '#2d5016',
+					confirmButtonText: 'Go to Login',
+					showCancelButton: true,
+					cancelButtonText: 'Cancel'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						window.location.href = '<?php echo $appBasePath; ?>login/login.php';
+					}
+				});
 			<?php endif; ?>
 		}
 	</script>

@@ -123,6 +123,9 @@ function displaySearchResults(products) {
         return;
     }
 
+    // Store products globally for modal access
+    window.searchResults = products;
+
     const currencySymbol = '₵'; // GHS symbol
 
     container.innerHTML = `
@@ -211,65 +214,125 @@ function displayError(message) {
 
 // View product details
 function viewProductDetails(productId) {
-    window.location.href = `all_product.php?product_id=${productId}`;
+    const products = window.searchResults || [];
+    const product = products.find(p => p.product_id == productId);
+    if (!product) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Product not found.',
+            confirmButtonColor: '#2d5016'
+        });
+        return;
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('productModal'));
+    const modalTitle = document.getElementById('productModalTitle');
+    const modalBody = document.getElementById('productModalBody');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    
+    modalTitle.innerHTML = `<i class="fas fa-apple-alt me-2"></i>${escapeHtml(product.product_title)}`;
+    
+    const basePath = window.APP_BASE_PATH || '';
+    modalBody.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                ${product.product_image ? 
+                    `<img src="${basePath}${product.product_image}" alt="${escapeHtml(product.product_title)}" class="img-fluid rounded">` : 
+                    `<div class="bg-light text-center rounded py-5">
+                        <i class="fas fa-apple-alt fa-4x text-muted"></i>
+                    </div>`
+                }
+            </div>
+            <div class="col-md-6">
+                <h4>${escapeHtml(product.product_title)}</h4>
+                <div class="h3 text-success fw-bold mb-3">₵${parseFloat(product.product_price || 0).toFixed(2)}</div>
+                
+                <div class="mb-3">
+                    <div class="mb-2">
+                        <span class="text-muted"><i class="fas fa-leaf me-2"></i>Category:</span>
+                        <span class="fw-semibold">${escapeHtml(product.cat_name || 'N/A')}</span>
+                    </div>
+                    ${product.brand_name ? `
+                    <div class="mb-2">
+                        <span class="text-muted"><i class="fas fa-tags me-2"></i>Brand:</span>
+                        <span class="fw-semibold">${escapeHtml(product.brand_name)}</span>
+                    </div>
+                    ` : ''}
+                    ${product.product_keywords ? `
+                    <div class="mb-2">
+                        <span class="text-muted"><i class="fas fa-key me-2"></i>Keywords:</span>
+                        <span class="fw-semibold">${escapeHtml(product.product_keywords)}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="product-detail-description">
+                    <h6 class="fw-bold mb-2">Description:</h6>
+                    <p>${escapeHtml(product.product_desc || 'No description available for this product.')}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    addToCartBtn.onclick = () => addToCartFromSearch(productId);
+    
+    modal.show();
 }
 
 // Add to cart from search results
-function addToCartFromSearch(productId) {
-    const basePath = window.APP_BASE_PATH || '';
-    fetch(basePath + 'actions/add_to_cart_action.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            product_id: productId,
-            quantity: 1
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Show success message
-            const btn = event.target.closest('button');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
-            btn.style.background = '#28a745';
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.style.background = 'linear-gradient(135deg, #4a7c59, #2d5016)';
-            }, 2000);
-            
-            // Update cart count
-            if (typeof updateCartCount === 'function') {
-                updateCartCount();
-            }
-        } else {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to add product to cart. Please try again.',
-                    confirmButtonColor: '#2d5016'
-                });
-            } else {
-                alert('Failed to add product to cart. Please try again.');
-            }
+async function addToCartFromSearch(productId) {
+    const products = window.searchResults || [];
+    const product = products.find(p => p.product_id == productId);
+    const productName = product ? product.product_title : 'Product';
+
+    if (!window.CartAPI) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Cart Error',
+            text: 'Cart system is not ready. Please refresh the page and try again.',
+            confirmButtonColor: '#2d5016'
+        });
+        return;
+    }
+
+    try {
+        const addBtn = document.getElementById('addToCartBtn');
+        if (addBtn) {
+            addBtn.disabled = true;
+            addBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Adding...`;
         }
-    })
-    .catch(error => {
-        console.error('Error adding to cart:', error);
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred. Please try again.',
-                confirmButtonColor: '#2d5016'
-            });
-        } else {
-            alert('An error occurred. Please try again.');
+
+        await CartAPI.addToCart(productId, 1);
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Added to Cart!',
+            text: `"${productName}" has been added to your cart!`,
+            confirmButtonColor: '#2d5016',
+            timer: 2000,
+            showConfirmButton: true
+        });
+
+        // Close modal if open
+        const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+        if (modal) {
+            modal.hide();
         }
-    });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Unable to add item to cart.',
+            confirmButtonColor: '#2d5016'
+        });
+    } finally {
+        const addBtn = document.getElementById('addToCartBtn');
+        if (addBtn) {
+            addBtn.disabled = false;
+            addBtn.innerHTML = `<i class="fas fa-shopping-cart me-2"></i>Add to Cart`;
+        }
+    }
 }
 
 // Escape HTML to prevent XSS
