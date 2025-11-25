@@ -51,9 +51,23 @@
         },
         bindEvents() {
             if (this.payButton) {
+                // Remove any existing event listeners
+                const newButton = this.payButton.cloneNode(true);
+                this.payButton.parentNode.replaceChild(newButton, this.payButton);
+                this.payButton = newButton;
+                
                 this.payButton.addEventListener('click', async (event) => {
                     event.preventDefault();
+                    event.stopPropagation();
                     if (this.payButton.disabled) return;
+                    
+                    // Double check SweetAlert2 is available
+                    if (typeof Swal === 'undefined') {
+                        console.error('SweetAlert2 not available!');
+                        alert('Please refresh the page. SweetAlert2 library failed to load.');
+                        return;
+                    }
+                    
                     await this.handlePaystackPayment();
                 });
             }

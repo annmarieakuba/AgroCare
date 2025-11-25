@@ -150,7 +150,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                         </div>
                         <input type="hidden" id="checkoutCurrency" value="NGN">
                         <input type="hidden" id="checkoutPaymentMethod" value="Paystack">
-                        <button class="btn btn-success w-100 btn-lg" id="payWithPaystackBtn" <?php echo isset($_SESSION['customer_id']) ? '' : 'disabled'; ?>>
+                        <button type="button" class="btn btn-success w-100 btn-lg" id="payWithPaystackBtn" <?php echo isset($_SESSION['customer_id']) ? '' : 'disabled'; ?>>
                             <i class="fas fa-credit-card me-2"></i>Pay with Paystack
                         </button>
                         <?php if (!isset($_SESSION['customer_id'])): ?>
@@ -189,11 +189,26 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
     <script>
         window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
         
-        // Verify SweetAlert2 is loaded
+        // Verify SweetAlert2 is loaded and override any prompt() calls
         if (typeof Swal === 'undefined') {
             console.error('SweetAlert2 failed to load!');
+            alert('Error: SweetAlert2 library failed to load. Please refresh the page.');
         } else {
             console.log('SweetAlert2 loaded successfully');
+            // Prevent any accidental prompt() calls
+            window.originalPrompt = window.prompt;
+            window.prompt = function() {
+                console.error('prompt() was called! This should not happen. Using SweetAlert2 instead.');
+                if (typeof Swal !== 'undefined') {
+                    return Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Please use the proper payment form.',
+                        confirmButtonColor: '#2d5016'
+                    });
+                }
+                return null;
+            };
         }
         
         // Show premium membership popup on page load
