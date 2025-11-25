@@ -106,6 +106,14 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 								<i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['customer_name'] ?? 'User'); ?>
 							</a>
 							<ul class="dropdown-menu">
+								<?php if (!isset($_SESSION['user_role']) || (int)$_SESSION['user_role'] !== 1): ?>
+									<li><a class="dropdown-item" href="view/order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
+								<?php endif; ?>
+								<?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item" href="admin/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</a></li>
+									<li><hr class="dropdown-divider"></li>
+								<?php endif; ?>
 								<li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
 							</ul>
 						</li>
