@@ -3,7 +3,8 @@
  * Handles fetching and displaying customer order history
  */
 
-const basePath = window.APP_BASE_PATH || '';
+// Get base path - ensure it ends with /
+const basePath = (window.APP_BASE_PATH || '').replace(/\/$/, '') + '/';
 
 // Format currency
 function formatCurrency(amount) {
@@ -38,7 +39,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadOrders() {
     const container = document.getElementById('ordersContainer');
     
-    fetch(`${basePath}actions/get_customer_orders_action.php`, {
+    // Construct action path (basePath already ends with /)
+    const actionPath = `${basePath}actions/get_customer_orders_action.php`;
+    
+    console.log('Fetching orders from:', actionPath); // Debug log
+    
+    fetch(actionPath, {
         method: 'GET',
         credentials: 'same-origin'
     })
@@ -186,7 +192,9 @@ function displayError(message) {
 // View order details
 function viewOrderDetails(orderId) {
     // Find the order data from the displayed orders
-    fetch(`${basePath}actions/get_customer_orders_action.php`, {
+    const actionPath = `${basePath}actions/get_customer_orders_action.php`;
+    
+    fetch(actionPath, {
         method: 'GET',
         credentials: 'same-origin'
     })

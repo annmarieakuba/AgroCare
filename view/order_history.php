@@ -200,7 +200,10 @@ if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/order_history.js?v=<?php echo time(); ?>"></script>
     <script>
-        window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
+        // Ensure basePath ends with / for consistent path construction
+        const rawBasePath = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
+        window.APP_BASE_PATH = rawBasePath.endsWith('/') ? rawBasePath : rawBasePath + '/';
+        console.log('Base path set to:', window.APP_BASE_PATH);
     </script>
 </body>
 </html>
