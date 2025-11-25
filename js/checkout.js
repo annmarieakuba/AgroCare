@@ -132,21 +132,31 @@
 
                 // Use SweetAlert for email input
                 const { value: email } = await Swal.fire({
-                    title: 'Enter Your Email',
+                    title: '<i class="fas fa-envelope me-2"></i>Payment Email Required',
+                    html: '<p class="mb-3">Please enter your email address for payment processing:</p>',
                     input: 'email',
-                    inputLabel: 'Email address for payment',
-                    inputPlaceholder: 'Enter your email',
+                    inputLabel: 'Email address',
+                    inputPlaceholder: 'Enter your email address',
+                    inputValue: '',
                     showCancelButton: true,
-                    confirmButtonText: 'Continue to Payment',
-                    cancelButtonText: 'Cancel',
+                    confirmButtonText: '<i class="fas fa-credit-card me-2"></i>Continue to Payment',
+                    cancelButtonText: '<i class="fas fa-times me-2"></i>Cancel',
+                    confirmButtonColor: '#2d5016',
+                    cancelButtonColor: '#6c757d',
+                    allowOutsideClick: false,
+                    allowEscapeKey: true,
                     inputValidator: (value) => {
                         if (!value) {
-                            return 'You need to enter your email!';
+                            return 'You need to enter your email address!';
                         }
                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailRegex.test(value)) {
                             return 'Please enter a valid email address!';
                         }
+                    },
+                    customClass: {
+                        popup: 'swal2-popup-custom',
+                        input: 'swal2-input-custom'
                     }
                 });
 

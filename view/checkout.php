@@ -16,6 +16,21 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
     <title>Checkout - AgroCare Farm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .swal2-popup-custom {
+            border-radius: 15px !important;
+        }
+        .swal2-input-custom {
+            border-radius: 8px !important;
+            border: 2px solid #2d5016 !important;
+            padding: 12px !important;
+            font-size: 1rem !important;
+        }
+        .swal2-input-custom:focus {
+            border-color: #4a7c59 !important;
+            box-shadow: 0 0 0 0.2rem rgba(45, 80, 22, 0.25) !important;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
