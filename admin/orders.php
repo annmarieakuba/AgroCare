@@ -164,10 +164,122 @@ $orders = $ordersResult ? mysqli_fetch_all($ordersResult, MYSQLI_ASSOC) : [];
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        const basePath = '<?php echo rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/'); ?>';
+        
         function viewOrderDetails(orderId) {
-            // In a full implementation, this would open a modal or navigate to order details page
-            alert('Order details for order #' + orderId + ' would be displayed here.');
+            // Show loading
+            Swal.fire({
+                title: 'Loading...',
+                text: 'Fetching order details',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            // Fetch order details
+            fetch(`../actions/get_admin_order_details.php?order_id=${orderId}`, {
+                method: 'GET',
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const order = data.data.order;
+                    const items = data.data.items;
+                    const payment = data.data.payment;
+                    
+                    // Build items HTML
+                    let itemsHtml = '<div class="table-responsive" style="max-height: 400px; overflow-y: auto;"><table class="table table-sm table-bordered">';
+                    itemsHtml += '<thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>';
+                    
+                    items.forEach(item => {
+                        itemsHtml += `
+                            <tr>
+                                <td>${escapeHtml(item.product_title)}</td>
+                                <td>${item.quantity}</td>
+                                <td>₵${item.unit_price.toFixed(2)}</td>
+                                <td>₵${item.line_total.toFixed(2)}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    itemsHtml += '</tbody></table></div>';
+                    
+                    // Build order info HTML
+                    let orderInfoHtml = `
+                        <div style="text-align: left; margin-bottom: 15px;">
+                            <p><strong>Order ID:</strong> #${order.order_id}</p>
+                            <p><strong>Invoice:</strong> ${escapeHtml(order.invoice_no || 'N/A')}</p>
+                            <p><strong>Date:</strong> ${formatDate(order.order_date)}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-${getStatusColor(order.order_status)}">${escapeHtml(order.order_status)}</span></p>
+                            <p><strong>Customer:</strong> ${escapeHtml(order.customer_name || 'Guest')}</p>
+                            <p><strong>Email:</strong> ${escapeHtml(order.customer_email || 'N/A')}</p>
+                            ${payment ? `
+                                <p><strong>Payment Method:</strong> ${escapeHtml(payment.payment_method || 'N/A')}</p>
+                                <p><strong>Payment Reference:</strong> ${escapeHtml(payment.payment_reference || 'N/A')}</p>
+                            ` : ''}
+                            <p><strong>Total Amount:</strong> <span style="font-size: 1.2em; color: #2d5016; font-weight: bold;">₵${data.data.total_amount.toFixed(2)}</span></p>
+                        </div>
+                    `;
+                    
+                    // Show SweetAlert with order details
+                    Swal.fire({
+                        title: `Order #${order.order_id} Details`,
+                        html: orderInfoHtml + '<hr><h6 style="text-align: left; margin-top: 15px;">Order Items:</h6>' + itemsHtml,
+                        width: '700px',
+                        confirmButtonText: 'Close',
+                        confirmButtonColor: '#2d5016',
+                        customClass: {
+                            popup: 'text-start'
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Failed to load order details',
+                        confirmButtonColor: '#2d5016'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load order details. Please try again.',
+                    confirmButtonColor: '#2d5016'
+                });
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function getStatusColor(status) {
+            switch(status.toLowerCase()) {
+                case 'completed': return 'success';
+                case 'pending': return 'warning';
+                case 'cancelled': return 'danger';
+                default: return 'secondary';
+            }
         }
     </script>
 </body>
