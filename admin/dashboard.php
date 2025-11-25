@@ -14,49 +14,56 @@ if (!is_admin()) {
 }
 
 require_once __DIR__ . '/../settings/db_class.php';
-require_once __DIR__ . '/../classes/order_class.php';
-require_once __DIR__ . '/../classes/product_class.php';
+require_once __DIR__ . '/../settings/db_cred.php';
 
-$db = new Database();
-$orderInstance = new Order();
-$productInstance = new Product();
+$db = new db_connection();
+$db->db_connect();
+$conn = $db->db;
 
 // Get earnings (total revenue from completed orders)
+// Try different possible column names for payment amount
 $earningsQuery = "
-    SELECT COALESCE(SUM(p.amount), 0) as total_earnings,
-           COUNT(DISTINCT p.order_id) as total_orders
-    FROM payment p
-    INNER JOIN orders o ON p.order_id = o.order_id
+    SELECT COALESCE(SUM(od.qty * od.unit_price), 0) as total_earnings,
+           COUNT(DISTINCT o.order_id) as total_orders
+    FROM orders o
+    INNER JOIN orderdetails od ON o.order_id = od.order_id
     WHERE o.order_status = 'completed'
 ";
-$earningsResult = $db->conn->query($earningsQuery);
-$earnings = $earningsResult->fetch_assoc();
+$earningsResult = $conn->query($earningsQuery);
+if (!$earningsResult) {
+    // Fallback if query fails
+    $earnings = ['total_earnings' => 0, 'total_orders' => 0];
+} else {
+    $earnings = $earningsResult->fetch_assoc() ?: ['total_earnings' => 0, 'total_orders' => 0];
+}
 
 // Get recent orders
 $recentOrdersQuery = "
     SELECT o.order_id, o.order_date, o.order_status, 
-           SUM(od.qty * od.unit_price) as total_amount,
+           COALESCE(SUM(od.qty * od.unit_price), 0) as total_amount,
            COUNT(od.orderdetail_id) as item_count
     FROM orders o
     LEFT JOIN orderdetails od ON o.order_id = od.order_id
-    GROUP BY o.order_id
+    GROUP BY o.order_id, o.order_date, o.order_status
     ORDER BY o.order_date DESC
     LIMIT 10
 ";
-$recentOrders = $db->conn->query($recentOrdersQuery)->fetch_all(MYSQLI_ASSOC);
+$recentOrdersResult = $conn->query($recentOrdersQuery);
+$recentOrders = $recentOrdersResult ? $recentOrdersResult->fetch_all(MYSQLI_ASSOC) : [];
 
 // Get most bought products
 $topProductsQuery = "
     SELECT p.product_id, p.product_title, p.product_image,
-           SUM(od.qty) as total_quantity,
-           SUM(od.qty * od.unit_price) as total_revenue
+           COALESCE(SUM(od.qty), 0) as total_quantity,
+           COALESCE(SUM(od.qty * od.unit_price), 0) as total_revenue
     FROM orderdetails od
     INNER JOIN products p ON od.product_id = p.product_id
     GROUP BY p.product_id, p.product_title, p.product_image
     ORDER BY total_quantity DESC
     LIMIT 10
 ";
-$topProducts = $db->conn->query($topProductsQuery)->fetch_all(MYSQLI_ASSOC);
+$topProductsResult = $conn->query($topProductsQuery);
+$topProducts = $topProductsResult ? $topProductsResult->fetch_all(MYSQLI_ASSOC) : [];
 
 // Get order statistics
 $orderStatsQuery = "
@@ -67,7 +74,8 @@ $orderStatsQuery = "
         SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_orders
     FROM orders
 ";
-$orderStats = $db->conn->query($orderStatsQuery)->fetch_assoc();
+$orderStatsResult = $conn->query($orderStatsQuery);
+$orderStats = $orderStatsResult ? $orderStatsResult->fetch_assoc() : ['total_orders' => 0, 'completed_orders' => 0, 'pending_orders' => 0, 'cancelled_orders' => 0];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -262,20 +270,46 @@ $orderStats = $db->conn->query($orderStatsQuery)->fetch_assoc();
                 </div>
             </div>
 
-            <!-- Top Products -->
+            <!-- Top Products with Chart -->
             <div class="col-lg-4">
                 <div class="dashboard-card">
                     <h4 class="fw-bold mb-3"><i class="fas fa-chart-line me-2"></i>Most Bought Products</h4>
-                    <div class="list-group">
-                        <?php if (empty($topProducts)): ?>
-                            <div class="text-center text-muted py-4">No sales data yet</div>
-                        <?php else: ?>
+                    <?php if (empty($topProducts)): ?>
+                        <div class="text-center text-muted py-4">No sales data yet</div>
+                    <?php else: ?>
+                        <!-- Simple Bar Chart Visualization -->
+                        <div class="mb-3" style="max-height: 200px;">
+                            <?php 
+                            $maxQuantity = max(array_column($topProducts, 'total_quantity'));
+                            foreach (array_slice($topProducts, 0, 5) as $index => $product): 
+                                $percentage = $maxQuantity > 0 ? ($product['total_quantity'] / $maxQuantity) * 100 : 0;
+                            ?>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small class="fw-semibold text-truncate" style="max-width: 60%;">
+                                            <?php echo htmlspecialchars($product['product_title']); ?>
+                                        </small>
+                                        <small class="text-muted"><?php echo $product['total_quantity']; ?> sold</small>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: <?php echo $percentage; ?>%" 
+                                             aria-valuenow="<?php echo $percentage; ?>" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <!-- Full List -->
+                        <div class="list-group">
                             <?php foreach ($topProducts as $index => $product): ?>
-                                <div class="list-group-item border-0 px-0">
+                                <div class="list-group-item border-0 px-0 py-2">
                                     <div class="d-flex align-items-center">
                                         <span class="badge bg-success me-2"><?php echo $index + 1; ?></span>
                                         <div class="flex-grow-1">
-                                            <div class="fw-semibold"><?php echo htmlspecialchars($product['product_title']); ?></div>
+                                            <div class="fw-semibold small"><?php echo htmlspecialchars($product['product_title']); ?></div>
                                             <small class="text-muted">
                                                 <?php echo $product['total_quantity']; ?> sold • 
                                                 ₵<?php echo number_format($product['total_revenue'], 2); ?>
@@ -284,8 +318,8 @@ $orderStats = $db->conn->query($orderStatsQuery)->fetch_assoc();
                                     </div>
                                 </div>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

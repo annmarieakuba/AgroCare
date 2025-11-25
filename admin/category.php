@@ -24,27 +24,40 @@ if (!is_admin()) {
     <link href="../css/category.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="../index.php">
-                <i class="fas fa-seedling"></i> AgroCare Farm Admin
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="dashboard.php">
+                <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="dashboard.php">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a>
-                <a class="nav-link" href="brand.php">
-                    <i class="fas fa-tags"></i> Brands
-                </a>
-                <a class="nav-link" href="product.php">
-                    <i class="fas fa-apple-alt"></i> Products
-                </a>
-                <a class="nav-link" href="../index.php">
-                    <i class="fas fa-home"></i> View Site
-                </a>
-                <a class="nav-link" href="../logout.php">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.php"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="category.php"><i class="fas fa-leaf me-1"></i>Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="brand.php"><i class="fas fa-tags me-1"></i>Brands</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="product.php"><i class="fas fa-apple-alt me-1"></i>Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.php"><i class="fas fa-shopping-cart me-1"></i>Orders</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php"><i class="fas fa-home me-1"></i>View Site</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../logout.php"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

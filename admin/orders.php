@@ -14,14 +14,17 @@ if (!is_admin()) {
 }
 
 require_once __DIR__ . '/../settings/db_class.php';
+require_once __DIR__ . '/../settings/db_cred.php';
 
-$db = new Database();
+$db = new db_connection();
+$db->db_connect();
+$conn = $db->db;
 
 // Get all orders with details
 $ordersQuery = "
     SELECT o.order_id, o.order_date, o.order_status,
            c.customer_name, c.customer_email,
-           SUM(od.qty * od.unit_price) as total_amount,
+           COALESCE(SUM(od.qty * od.unit_price), 0) as total_amount,
            COUNT(od.orderdetail_id) as item_count
     FROM orders o
     LEFT JOIN customers c ON o.customer_id = c.customer_id
@@ -29,7 +32,8 @@ $ordersQuery = "
     GROUP BY o.order_id, o.order_date, o.order_status, c.customer_name, c.customer_email
     ORDER BY o.order_date DESC
 ";
-$orders = $db->conn->query($ordersQuery)->fetch_all(MYSQLI_ASSOC);
+$ordersResult = $conn->query($ordersQuery);
+$orders = $ordersResult ? $ordersResult->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,7 +53,7 @@ $orders = $db->conn->query($ordersQuery)->fetch_all(MYSQLI_ASSOC);
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark admin-nav">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="dashboard.php">
                 <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard

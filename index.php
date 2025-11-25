@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+// Redirect admin users to dashboard instead of showing customer homepage
+if (isset($_SESSION['customer_id']) && isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1) {
+    header('Location: admin/dashboard.php');
+    exit;
+}
+
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
 $baseDir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
 if (substr($baseDir, -5) === '/view') {
