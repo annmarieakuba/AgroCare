@@ -4,6 +4,8 @@
  * Returns all orders for the logged-in customer with order details
  */
 
+// Start output buffering to catch any warnings/errors
+ob_start();
 header('Content-Type: application/json');
 session_start();
 
@@ -14,10 +16,23 @@ require_once __DIR__ . '/../classes/product_class.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['customer_id'])) {
+    ob_clean();
     echo json_encode([
         'success' => false,
         'message' => 'Please log in to view your orders'
     ]);
+    ob_end_flush();
+    exit;
+}
+
+// Check if user is admin (admins shouldn't access customer orders)
+if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1) {
+    ob_clean();
+    echo json_encode([
+        'success' => false,
+        'message' => 'Admin users cannot view customer orders'
+    ]);
+    ob_end_flush();
     exit;
 }
 
@@ -103,16 +118,20 @@ try {
         ];
     }
     
+    ob_clean();
     echo json_encode([
         'success' => true,
         'data' => $ordersWithDetails,
         'count' => count($ordersWithDetails)
     ]);
+    ob_end_flush();
     
 } catch (Exception $e) {
+    ob_clean();
     echo json_encode([
         'success' => false,
         'message' => 'Error fetching orders: ' . $e->getMessage()
     ]);
+    ob_end_flush();
 }
 

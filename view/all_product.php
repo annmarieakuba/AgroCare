@@ -53,7 +53,9 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                                 <i class="fas fa-user me-1"></i><?php echo htmlspecialchars($_SESSION['customer_name'] ?? 'User'); ?>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
+                                <?php if (!isset($_SESSION['user_role']) || (int)$_SESSION['user_role'] !== 1): ?>
+                                    <li><a class="dropdown-item" href="order_history.php"><i class="fas fa-receipt me-2"></i>My Orders</a></li>
+                                <?php endif; ?>
                                 <?php if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1): ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="../admin/category.php"><i class="fas fa-leaf me-2"></i>Manage Categories</a></li>
@@ -201,7 +203,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
                 <div class="col-12 text-center">
                     <p class="mb-0">
                         <i class="fas fa-seedling me-2"></i>
-                        &copy; 2024 AgroCare Farm. All rights reserved.
+                        &copy; 2025 AgroCare Farm. All rights reserved.
                     </p>
                 </div>
             </div>

@@ -42,7 +42,21 @@ function loadOrders() {
         method: 'GET',
         credentials: 'same-origin'
     })
-    .then(response => response.json())
+    .then(response => {
+        // Check if response is ok
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        // Get response text first to check for errors
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Invalid JSON response:', text);
+                throw new Error('Invalid response from server. Please check console for details.');
+            }
+        });
+    })
     .then(data => {
         if (data.success) {
             if (data.data && data.data.length > 0) {
@@ -56,7 +70,7 @@ function loadOrders() {
     })
     .catch(error => {
         console.error('Error:', error);
-        displayError('An error occurred while loading your orders. Please try again.');
+        displayError('An error occurred while loading your orders: ' + error.message);
     });
 }
 

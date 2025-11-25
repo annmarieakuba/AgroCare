@@ -60,9 +60,9 @@
         }
     }
 
-    function formatCurrency(amount, currency = 'USD') {
+    function formatCurrency(amount, currency = 'GHS') {
         try {
-            return new Intl.NumberFormat('en-US', {
+            return new Intl.NumberFormat('en-GH', {
                 style: 'currency',
                 currency: currency
             }).format(amount);

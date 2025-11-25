@@ -13,6 +13,12 @@ if (!isset($_SESSION['customer_id'])) {
     header('Location: ' . $appBasePath . 'login/login.php?redirect=order_history');
     exit;
 }
+
+// Redirect admins away from order history (they shouldn't see customer orders)
+if (isset($_SESSION['user_role']) && (int)$_SESSION['user_role'] === 1) {
+    header('Location: ' . $appBasePath . 'admin/product.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
