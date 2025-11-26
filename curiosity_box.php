@@ -90,6 +90,143 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 			border-radius: 20px;
 			margin: 40px 0;
 		}
+		
+		/* Animated Box Styles */
+		@keyframes openFlap {
+			0%, 100% { transform: rotateX(0deg); }
+			50% { transform: rotateX(-120deg); }
+		}
+		
+		@keyframes openFlapLeft {
+			0%, 100% { transform: rotateY(0deg); }
+			50% { transform: rotateY(90deg); }
+		}
+		
+		@keyframes openFlapRight {
+			0%, 100% { transform: rotateY(0deg); }
+			50% { transform: rotateY(-90deg); }
+		}
+		
+		@keyframes popOut {
+			0% {
+				opacity: 0;
+				transform: translateY(0) scale(0.5);
+			}
+			20% {
+				opacity: 1;
+				transform: translateY(-30px) scale(1.2);
+			}
+			40% {
+				transform: translateY(-40px) scale(1);
+			}
+			60% {
+				transform: translateY(-40px) scale(1) rotate(5deg);
+			}
+			80% {
+				transform: translateY(-40px) scale(1) rotate(-5deg);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(-40px) scale(1) rotate(0deg);
+			}
+		}
+		
+		.curiosity-box-animated {
+			perspective: 1000px;
+		}
+		
+		.box-item {
+			opacity: 0;
+		}
+		
+		.animated-box-container {
+			overflow: visible;
+		}
+		
+		/* Video/GIF Container Styles */
+		.video-showcase-container {
+			position: relative;
+			border-radius: 20px;
+			overflow: hidden;
+			box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+			background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
+			padding: 40px;
+		}
+		
+		.video-placeholder {
+			width: 100%;
+			height: 400px;
+			background: rgba(255,255,255,0.1);
+			border-radius: 15px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.video-placeholder video,
+		.video-placeholder img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 15px;
+		}
+		
+		.play-button-overlay {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 80px;
+			height: 80px;
+			background: rgba(255,255,255,0.9);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			z-index: 10;
+		}
+		
+		.play-button-overlay:hover {
+			background: white;
+			transform: translate(-50%, -50%) scale(1.1);
+		}
+		
+		.play-button-overlay i {
+			font-size: 2rem;
+			color: #2d5016;
+			margin-left: 5px;
+		}
+		
+		/* Fallback Animation Styles */
+		@keyframes boxPulse {
+			0%, 100% {
+				transform: scale(1);
+				box-shadow: 0 0 0 0 rgba(255,255,255,0.4);
+			}
+			50% {
+				transform: scale(1.05);
+				box-shadow: 0 0 0 20px rgba(255,255,255,0);
+			}
+		}
+		
+		@keyframes floatItem {
+			0%, 100% {
+				transform: translateY(0) rotate(0deg);
+				opacity: 0.8;
+			}
+			50% {
+				transform: translateY(-20px) rotate(10deg);
+				opacity: 1;
+			}
+		}
+		
+		.animated-preview-fallback {
+			background: linear-gradient(135deg, rgba(45, 80, 22, 0.8) 0%, rgba(74, 124, 89, 0.8) 100%);
+		}
 	</style>
 </head>
 <body>
@@ -151,8 +288,37 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 				</div>
 				<div class="col-lg-6">
 					<div class="box-content-visual">
-						<i class="fas fa-box-open" style="font-size: 10rem; color: #2d5016; margin-bottom: 20px;"></i>
-						<h3 class="mb-3" style="color: #2d5016;">What's Inside?</h3>
+						<!-- Animated Box Opening -->
+						<div class="animated-box-container position-relative" style="min-height: 400px; display: flex; align-items: center; justify-content: center;">
+							<!-- The Box -->
+							<div class="curiosity-box-animated position-relative" style="width: 200px; height: 200px;">
+								<!-- Box Base -->
+								<div class="box-base" style="width: 200px; height: 150px; background: #2d5016; border-radius: 10px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+									<!-- Box Flaps (opening animation) -->
+									<div class="box-flap box-flap-top" style="width: 200px; height: 50px; background: #4a7c59; border-radius: 10px 10px 0 0; position: absolute; top: -50px; left: 0; transform-origin: bottom center; animation: openFlap 2s ease-in-out infinite;"></div>
+									<div class="box-flap box-flap-left" style="width: 50px; height: 150px; background: #3a6a4a; border-radius: 10px 0 0 10px; position: absolute; top: 0; left: -50px; transform-origin: right center; animation: openFlapLeft 2s ease-in-out infinite;"></div>
+									<div class="box-flap box-flap-right" style="width: 50px; height: 150px; background: #3a6a4a; border-radius: 0 10px 10px 0; position: absolute; top: 0; right: -50px; transform-origin: left center; animation: openFlapRight 2s ease-in-out infinite;"></div>
+								</div>
+								
+								<!-- Items popping out -->
+								<div class="box-item item-1" style="position: absolute; top: -80px; left: 50%; transform: translateX(-50%); animation: popOut 2s ease-in-out infinite; animation-delay: 0.5s;">
+									<i class="fas fa-fish" style="font-size: 3rem; color: #4a7c59; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));"></i>
+								</div>
+								<div class="box-item item-2" style="position: absolute; top: -100px; left: 20%; transform: translateX(-50%); animation: popOut 2s ease-in-out infinite; animation-delay: 0.7s;">
+									<i class="fas fa-book" style="font-size: 2.5rem; color: #ffc107; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));"></i>
+								</div>
+								<div class="box-item item-3" style="position: absolute; top: -90px; right: 15%; transform: translateX(50%); animation: popOut 2s ease-in-out infinite; animation-delay: 0.9s;">
+									<i class="fas fa-graduation-cap" style="font-size: 2.5rem; color: #2d5016; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));"></i>
+								</div>
+								<div class="box-item item-4" style="position: absolute; bottom: -60px; left: 30%; transform: translateX(-50%); animation: popOut 2s ease-in-out infinite; animation-delay: 1.1s;">
+									<i class="fas fa-flask" style="font-size: 2.5rem; color: #17a2b8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));"></i>
+								</div>
+								<div class="box-item item-5" style="position: absolute; bottom: -70px; right: 25%; transform: translateX(50%); animation: popOut 2s ease-in-out infinite; animation-delay: 1.3s;">
+									<i class="fas fa-gift" style="font-size: 3rem; color: #dc3545; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));"></i>
+								</div>
+							</div>
+						</div>
+						<h3 class="mb-3 mt-4" style="color: #2d5016;">What's Inside?</h3>
 						<ul class="list-unstyled text-start">
 							<li class="mb-2"><i class="fas fa-fish me-2" style="color: #4a7c59;"></i>Personalized protein portions</li>
 							<li class="mb-2"><i class="fas fa-book me-2" style="color: #4a7c59;"></i>Step-by-step recipes</li>
@@ -160,6 +326,79 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 							<li class="mb-2"><i class="fas fa-flask me-2" style="color: #4a7c59;"></i>Protein experiment challenges</li>
 							<li class="mb-2"><i class="fas fa-gift me-2" style="color: #4a7c59;"></i>Surprise seasonal items</li>
 						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Video/GIF Showcase Section -->
+	<section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-12 mb-4">
+					<h2 class="display-5 fw-bold text-center mb-4" style="color: #2d5016;">
+						<i class="fas fa-play-circle me-2"></i>See What's Inside!
+					</h2>
+					<p class="text-center text-muted lead mb-5">Watch a quick preview of what you'll receive in your Curiosity Box</p>
+				</div>
+				<div class="col-lg-10 mx-auto">
+					<div class="video-showcase-container">
+						<div class="video-placeholder" id="curiosityBoxVideo">
+							<!-- Replace this with your actual video or GIF -->
+							<!-- Option 1: Use a video file -->
+							<!-- 
+							<video id="curiosityVideo" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;">
+								<source src="videos/curiosity_box_preview.mp4" type="video/mp4">
+								<source src="videos/curiosity_box_preview.webm" type="video/webm">
+								Your browser does not support the video tag.
+							</video>
+							-->
+							
+							<!-- Option 2: Use a GIF file -->
+							<!-- 
+							<img src="images/curiosity_box_preview.gif" alt="Curiosity Box Preview" style="width: 100%; height: 100%; object-fit: cover;">
+							-->
+							
+							<!-- Option 3: Use an embedded YouTube/Vimeo video -->
+							<!-- 
+							<iframe width="100%" height="100%" src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&loop=1&playlist=YOUR_VIDEO_ID&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="border-radius: 15px;"></iframe>
+							-->
+							
+							<!-- Fallback: Animated preview using CSS (shown if no video/GIF is provided) -->
+							<div class="animated-preview-fallback" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; color: white;">
+								<div class="preview-box" style="width: 150px; height: 150px; background: rgba(255,255,255,0.2); border-radius: 15px; position: relative; margin-bottom: 20px; animation: boxPulse 2s ease-in-out infinite;">
+									<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+										<i class="fas fa-box-open" style="font-size: 4rem; color: white;"></i>
+									</div>
+									<!-- Items floating around -->
+									<div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); animation: floatItem 3s ease-in-out infinite;">
+										<i class="fas fa-fish" style="font-size: 2rem; color: #ffc107;"></i>
+									</div>
+									<div style="position: absolute; bottom: -20px; right: -20px; animation: floatItem 3s ease-in-out infinite 0.5s;">
+										<i class="fas fa-book" style="font-size: 1.5rem; color: white;"></i>
+									</div>
+									<div style="position: absolute; top: -20px; right: -20px; animation: floatItem 3s ease-in-out infinite 1s;">
+										<i class="fas fa-gift" style="font-size: 1.5rem; color: #ffc107;"></i>
+									</div>
+								</div>
+								<p class="mb-0" style="font-size: 1.1rem; font-weight: 500;">
+									<i class="fas fa-info-circle me-2"></i>
+									Add your video or GIF file to see the preview here
+								</p>
+								<small class="text-white-50 mt-2">Replace the placeholder code in curiosity_box.php with your video/GIF</small>
+							</div>
+							
+							<div class="play-button-overlay" id="playButton" style="display: none;">
+								<i class="fas fa-play"></i>
+							</div>
+						</div>
+					</div>
+					<div class="text-center mt-4">
+						<p class="text-muted mb-0">
+							<i class="fas fa-lightbulb me-2"></i>
+							<strong>Tip:</strong> Upload a short 15-30 second video or animated GIF showing items being unpacked from the box
+						</p>
 					</div>
 				</div>
 			</div>
@@ -419,6 +658,39 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		window.APP_BASE_PATH = '<?php echo htmlspecialchars($appBasePath, ENT_QUOTES); ?>';
+		
+		// Video/GIF Playback Handler
+		document.addEventListener('DOMContentLoaded', function() {
+			const videoContainer = document.getElementById('curiosityBoxVideo');
+			const playButton = document.getElementById('playButton');
+			const video = videoContainer.querySelector('video');
+			
+			if (video) {
+				// Show play button overlay
+				playButton.style.display = 'flex';
+				
+				// Handle play button click
+				playButton.addEventListener('click', function() {
+					if (video.paused) {
+						video.play();
+						playButton.style.display = 'none';
+					}
+				});
+				
+				// Show play button when video ends (if not looping)
+				video.addEventListener('ended', function() {
+					if (!video.loop) {
+						playButton.style.display = 'flex';
+					}
+				});
+				
+				// Show play button on pause
+				video.addEventListener('pause', function() {
+					playButton.style.display = 'flex';
+				});
+			}
+		});
+		
 		function subscribeToBox(plan) {
 			<?php if (isset($_SESSION['customer_id'])): ?>
 				Swal.fire({
