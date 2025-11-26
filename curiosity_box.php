@@ -416,8 +416,9 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 							$gifPath = '';
 							
 							foreach ($gifPaths as $path) {
-								if (file_exists(__DIR__ . '/' . $path)) {
-									$gifPath = $path;
+								$fullPath = __DIR__ . '/' . $path;
+								if (file_exists($fullPath)) {
+									$gifPath = $appBasePath . $path;
 									$gifFound = true;
 									break;
 								}
@@ -425,7 +426,7 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 							
 							if ($gifFound):
 							?>
-								<img src="<?php echo htmlspecialchars($gifPath); ?>" alt="Curiosity Box - What's Inside Preview" style="width: 100%; height: 100%; object-fit: contain; background: transparent;">
+								<img src="<?php echo htmlspecialchars($gifPath); ?>" alt="Curiosity Box - What's Inside Preview" style="width: 100%; height: 100%; object-fit: contain; background: transparent; display: block;">
 							<?php endif; ?>
 						</div>
 					</div>
