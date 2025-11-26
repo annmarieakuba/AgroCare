@@ -10,7 +10,22 @@ $maxSize = 10 * 1024 * 1024; // 10MB
 
 // Create images directory if it doesn't exist
 if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+    $oldUmask = umask(0);
+    if (!mkdir($uploadDir, 0777, true)) {
+        $message = 'Failed to create images directory. Please create it manually with write permissions.';
+        $messageType = 'danger';
+    }
+    umask($oldUmask);
+}
+
+// Ensure directory is writable
+if (is_dir($uploadDir) && !is_writable($uploadDir)) {
+    // Try to make it writable
+    @chmod($uploadDir, 0777);
+    if (!is_writable($uploadDir)) {
+        $message = 'Images directory is not writable. Please set permissions to 777 on the images/ directory.';
+        $messageType = 'warning';
+    }
 }
 
 $message = '';
@@ -37,21 +52,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['gif_file'])) {
                 'curiosity_box_animation.gif'
             ];
             
-            $uploaded = false;
-            foreach ($filenames as $filename) {
-                $targetPath = $uploadDir . $filename;
-                if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                    chmod($targetPath, 0644);
-                    $message = "GIF uploaded successfully as: $filename";
-                    $messageType = 'success';
-                    $uploaded = true;
-                    break;
-                }
-            }
-            
-            if (!$uploaded) {
-                $message = 'Failed to upload file. Please check directory permissions.';
+            // Check if directory is writable before attempting upload
+            if (!is_writable($uploadDir)) {
+                $message = 'Images directory is not writable. Please set permissions to 777 on the images/ directory. Current permissions: ' . substr(sprintf('%o', fileperms($uploadDir)), -4);
                 $messageType = 'danger';
+            } else {
+                $uploaded = false;
+                $lastError = '';
+                
+                foreach ($filenames as $filename) {
+                    $targetPath = $uploadDir . $filename;
+                    
+                    // Try to remove existing file if it exists
+                    if (file_exists($targetPath)) {
+                        @unlink($targetPath);
+                    }
+                    
+                    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                        @chmod($targetPath, 0644);
+                        $message = "GIF uploaded successfully as: <strong>$filename</strong>";
+                        $messageType = 'success';
+                        $uploaded = true;
+                        break;
+                    } else {
+                        $lastError = error_get_last()['message'] ?? 'Unknown error';
+                    }
+                }
+                
+                if (!$uploaded) {
+                    $message = 'Failed to upload file. Error: ' . htmlspecialchars($lastError) . '. Please check directory permissions (should be 777).';
+                    $messageType = 'danger';
+                }
             }
         }
     } else {
@@ -141,6 +172,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['gif_file'])) {
                     <li><i class="fas fa-check text-success me-2"></i>curiosity_box_animation.gif</li>
                 </ul>
             </div>
+            
+            <?php if (is_dir($uploadDir)): ?>
+                <div class="mt-3 p-3 rounded" style="background: <?php echo is_writable($uploadDir) ? '#d4edda' : '#f8d7da'; ?>;">
+                    <small class="d-block">
+                        <i class="fas fa-<?php echo is_writable($uploadDir) ? 'check-circle text-success' : 'exclamation-triangle text-danger'; ?> me-2"></i>
+                        <strong>Directory Status:</strong> 
+                        <?php if (is_writable($uploadDir)): ?>
+                            <span class="text-success">Writable ✓</span>
+                        <?php else: ?>
+                            <span class="text-danger">Not Writable ✗</span>
+                            <br><small class="text-muted mt-1 d-block">Run: <code>chmod 777 images</code> in terminal</small>
+                        <?php endif; ?>
+                    </small>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     
