@@ -350,11 +350,42 @@
     // Show introduction on first visit
     if (!localStorage.getItem('chatbot_intro_shown')) {
         setTimeout(() => {
-            const intro = confirm('Meet Your AI Dietitian! I can help you plan meals, track nutrition, and find the perfect proteins for your goals. Would you like to try it?');
-            if (intro) {
-                ChatbotWidget.toggleChat();
+            // Check if SweetAlert2 is available
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: '<i class="fas fa-robot fa-2x text-primary mb-3"></i>Meet Your AI Dietitian!',
+                    html: `
+                        <div class="text-center">
+                            <p class="lead mb-3">I can help you plan meals, track nutrition, and find the perfect proteins for your goals.</p>
+                            <p class="text-muted">Would you like to try it?</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-comments me-2"></i>Yes, Let\'s Chat!',
+                    cancelButtonText: '<i class="fas fa-times me-2"></i>Maybe Later',
+                    confirmButtonColor: '#2d5016',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true,
+                    allowOutsideClick: true,
+                    allowEscapeKey: true,
+                    customClass: {
+                        popup: 'swal2-popup-custom'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        ChatbotWidget.toggleChat();
+                    }
+                    localStorage.setItem('chatbot_intro_shown', 'true');
+                });
+            } else {
+                // Fallback if SweetAlert2 is not loaded (shouldn't happen, but just in case)
+                const intro = confirm('Meet Your AI Dietitian! I can help you plan meals, track nutrition, and find the perfect proteins for your goals. Would you like to try it?');
+                if (intro) {
+                    ChatbotWidget.toggleChat();
+                }
+                localStorage.setItem('chatbot_intro_shown', 'true');
             }
-            localStorage.setItem('chatbot_intro_shown', 'true');
         }, 3000);
     }
 })();
