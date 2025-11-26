@@ -426,51 +426,8 @@ $appBasePath = ($baseDir === '' || $baseDir === '.') ? '/' : $baseDir . '/';
 							if ($gifFound):
 							?>
 								<img src="<?php echo htmlspecialchars($gifPath); ?>" alt="Curiosity Box - What's Inside Preview" style="width: 100%; height: 100%; object-fit: contain; background: transparent;">
-							<?php else: ?>
-								<!-- Animated Preview - Box Opening Animation -->
-								<div class="curiosity-box-animation-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; background: linear-gradient(135deg, rgba(45, 80, 22, 0.1) 0%, rgba(74, 124, 89, 0.1) 100%); border-radius: 15px; overflow: visible;">
-									<!-- Main Box -->
-									<div class="animated-box-main" style="position: relative; width: 250px; height: 250px; perspective: 1000px;">
-										<!-- Box Base -->
-										<div class="box-base-animated" style="width: 200px; height: 150px; background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%); border-radius: 10px; position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); box-shadow: 0 15px 40px rgba(0,0,0,0.3); animation: boxShake 4s ease-in-out infinite;">
-											<!-- Box Content Glow -->
-											<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 80%; background: rgba(255,255,255,0.1); border-radius: 5px; animation: contentGlow 2s ease-in-out infinite;"></div>
-										</div>
-										
-										<!-- Box Flaps Opening -->
-										<div class="box-flap-top-animated" style="width: 200px; height: 50px; background: linear-gradient(135deg, #4a7c59 0%, #3a6a4a 100%); border-radius: 10px 10px 0 0; position: absolute; bottom: 200px; left: 50%; transform: translateX(-50%) rotateX(0deg); transform-origin: bottom center; transform-style: preserve-3d; animation: openTopFlap 4s ease-in-out infinite; box-shadow: 0 -5px 20px rgba(0,0,0,0.2);"></div>
-										
-										<!-- Items Popping Out -->
-										<div class="animated-item item-fish" style="position: absolute; bottom: 220px; left: 50%; transform: translateX(-50%); opacity: 0; animation: popOutFish 4s ease-in-out infinite;">
-											<i class="fas fa-fish" style="font-size: 3.5rem; color: #4a7c59; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));"></i>
-										</div>
-										<div class="animated-item item-book" style="position: absolute; bottom: 200px; left: 30%; transform: translateX(-50%); opacity: 0; animation: popOutBook 4s ease-in-out infinite;">
-											<i class="fas fa-book" style="font-size: 3rem; color: #ffc107; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));"></i>
-										</div>
-										<div class="animated-item item-cap" style="position: absolute; bottom: 210px; right: 30%; transform: translateX(50%); opacity: 0; animation: popOutCap 4s ease-in-out infinite;">
-											<i class="fas fa-graduation-cap" style="font-size: 3rem; color: #2d5016; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));"></i>
-										</div>
-										<div class="animated-item item-flask" style="position: absolute; bottom: 180px; left: 25%; transform: translateX(-50%); opacity: 0; animation: popOutFlask 4s ease-in-out infinite;">
-											<i class="fas fa-flask" style="font-size: 2.5rem; color: #17a2b8; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));"></i>
-										</div>
-										<div class="animated-item item-gift" style="position: absolute; bottom: 190px; right: 25%; transform: translateX(50%); opacity: 0; animation: popOutGift 4s ease-in-out infinite;">
-											<i class="fas fa-gift" style="font-size: 3.5rem; color: #dc3545; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));"></i>
-										</div>
-										
-										<!-- Sparkle Effects -->
-										<div class="sparkle sparkle-1" style="position: absolute; top: 20%; left: 20%; width: 8px; height: 8px; background: #ffc107; border-radius: 50%; opacity: 0; animation: sparkle 4s ease-in-out infinite;"></div>
-										<div class="sparkle sparkle-2" style="position: absolute; top: 30%; right: 25%; width: 6px; height: 6px; background: #ffc107; border-radius: 50%; opacity: 0; animation: sparkle 4s ease-in-out infinite 0.5s;"></div>
-										<div class="sparkle sparkle-3" style="position: absolute; top: 15%; left: 60%; width: 10px; height: 10px; background: #ffc107; border-radius: 50%; opacity: 0; animation: sparkle 4s ease-in-out infinite 1s;"></div>
-									</div>
-								</div>
 							<?php endif; ?>
 						</div>
-					</div>
-					<div class="text-center mt-4">
-						<p class="text-muted mb-0">
-							<i class="fas fa-lightbulb me-2"></i>
-							<strong>Tip:</strong> Upload a short 15-30 second video or animated GIF showing items being unpacked from the box
-						</p>
 					</div>
 				</div>
 			</div>
